@@ -10,11 +10,11 @@ public enum ReturnNo {
     FIELD_INVALID(400, 400, "%s字段不合法"),
     IMAGE_SIZE_EXCEED(400, 401, "图片大小超限(最大：%s)"),
     PARAMETER_MISSED(400, 402, "缺少必要参数 %s"),
+    AUTH_INVALID_ACCOUNT(400, 403, "用户名不存在或密码错误"),
 
     AUTH_INVALID_TOKEN(401, 410, "token不合法"),
     AUTH_TOKEN_EXPIRED(401, 411, "token过期"),
-    AUTH_INVALID_ACCOUNT(401, 412, "用户名不存在或密码错误"),
-    AUTH_LOGIN_REQUIRED(401, 413, "需要先登录"),
+    AUTH_LOGIN_REQUIRED(401, 412, "需要先登录"),
 
     AUTH_NO_RIGHT(403, 430, "权限不足"),
 

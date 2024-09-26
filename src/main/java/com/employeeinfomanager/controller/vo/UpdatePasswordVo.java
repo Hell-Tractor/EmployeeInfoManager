@@ -1,6 +1,5 @@
 package com.employeeinfomanager.controller.vo;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;

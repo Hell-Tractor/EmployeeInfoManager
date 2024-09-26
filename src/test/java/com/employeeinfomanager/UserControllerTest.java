@@ -16,10 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.util.Map;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -116,7 +113,6 @@ public class UserControllerTest {
                     .content(requestJson))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse().getContentAsString();
-//        String token = objectMapper.readValue(response, Map.class).get("data").toString();
         String token = Utils.getJsonField(response, "data", String.class);
         JwtHelper jwtHelper = new JwtHelper();
         UserToken decryptedToken = jwtHelper.verifyTokenAndGetClaims(token);
@@ -187,7 +183,64 @@ public class UserControllerTest {
 
     @Test
     public void deleteSelfTest0() throws Exception {
-        String requestJson = "{ \"username\": \"test0\", \"password\": \"123456\" }";
+        String loginJson = "{ \"username\": \"test0\", \"password\": \"123456\" }";
+        String response = this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        String token = Utils.getJsonField(response, "data", String.class);
 
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_SELF)
+                        .header("authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void deleteSelfTest1() throws Exception {
+        String loginJson = "{ \"username\": \"root\", \"password\": \"123456\" }";
+        String response = this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        String token = Utils.getJsonField(response, "data", String.class);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_SELF)
+                        .header("authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.AUTH_NO_RIGHT.getCode()));
+    }
+
+    @Test
+    public void updatePasswordTest0() throws Exception {
+        String loginJson = "{ \"username\": \"test0\", \"password\": \"123456\" }";
+        String response = this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        String token = Utils.getJsonField(response, "data", String.class);
+
+        String updatePasswordJson = "{ \"oldPassword\": \"123456\", \"newPassword\": \"123456abc\" }";
+        this.mockMvc.perform(MockMvcRequestBuilders.post(UPDATE_PASSWORD)
+                        .header("authorization", token)
+                        .content(updatePasswordJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginJson))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.AUTH_INVALID_ACCOUNT.getCode()));
+
+        String loginWithNewPasswordJson = "{ \"username\": \"test0\", \"password\": \"123456abc\" }";
+        this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginWithNewPasswordJson))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }
