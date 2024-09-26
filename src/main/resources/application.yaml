@@ -1,0 +1,20 @@
+server:
+  port: 8091
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/EmployeeInfoManager?serverTimezone=Asia/Shanghai
+    username: EmployeeInfoManager
+    password: 123456
+
+EmployeeInfoManager:
+  page-size:
+    max: 1000
+    default: 10
+  time:
+    begin: "2024-09-01T00:00:00"
+    end: "2099-12-31T23:59:59"
+  token:
+    expire:
+      seconds: 3600
