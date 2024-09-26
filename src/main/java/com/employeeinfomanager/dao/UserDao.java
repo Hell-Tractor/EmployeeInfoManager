@@ -65,7 +65,7 @@ public class UserDao {
         return getBo(po.get());
     }
 
-    public Long insert(User user) {
+    public void insert(User user) {
         // check if already exists
         Optional<UserPo> po = this.mapper.findByUsername(user.getUsername());
         if (po.isPresent()) {
@@ -79,18 +79,16 @@ public class UserDao {
         }
 
         UserPo newUserPo = getPo(user);
+        newUserPo.setId(null);
         this.mapper.save(newUserPo);
-        return newUserPo.getId();
+        user.setId(newUserPo.getId());
     }
 
     public void save(User user) {
         if (null == user.getId()) {
             throw new BusinessException(ReturnNo.RESOURCE_NOT_EXIST, String.format(ReturnNo.RESOURCE_NOT_EXIST.getMessage(), "用户", -1));
         }
-        Optional<UserPo> po = this.mapper.findById(user.getId());
-        if (po.isEmpty()) {
-            throw new BusinessException(ReturnNo.RESOURCE_NOT_EXIST, String.format(ReturnNo.RESOURCE_NOT_EXIST.getMessage(), "用户", user.getId()));
-        }
+        this.findById(user.getId()); // check if user exists
 
         // check if depart is valid
         setBo(user);
@@ -105,7 +103,7 @@ public class UserDao {
         if (null == id) {
             throw new BusinessException(ReturnNo.PARAMETER_MISSED, String.format(ReturnNo.PARAMETER_MISSED.getMessage(), "userId"));
         }
-
+        this.findById(id);
         this.mapper.deleteById(id);
     }
 }

@@ -47,7 +47,7 @@ public class UserService {
 
     public PageDto<UserDto> retrieveUsers(int page, int pageSize) {
         List<User> users = this.userDao.retrieveAll(page, pageSize);
-        List<UserDto> result = users.stream().map(UserService::getDto).toList();
+        List<UserDto> result = users.stream().map(this::getDto).toList();
         return new PageDto<>(result, page, result.size());
     }
 
@@ -69,7 +69,7 @@ public class UserService {
         this.userDao.save(user);
     }
 
-    private static UserDto getDto(User bo) {
+    private UserDto getDto(User bo) {
         return new UserDto(bo.getId(), bo.getUsername(), bo.getLevel(), bo.getDepart().getName());
     }
 }
