@@ -46,7 +46,7 @@ public class UserDao {
     }
 
     public List<User> retrieveAll(int page, int pageSize) {
-        return this.mapper.findAll(PageRequest.of(page, pageSize)).stream().map(this::getBo).toList();
+        return this.mapper.findAll(PageRequest.of(page - 1, pageSize)).stream().map(this::getBo).toList();
     }
 
     public User findById(Long id) {

@@ -1,14 +1,14 @@
-drop table User;
+drop table user;
 
-create table User (
-    id INT PRIMARY KEY,
+create table user (
+    id INT PRIMARY KEY AUTO_INCREMENT,
     username CHAR(16),
     password CHAR(16),
     level TINYINT,
     depart_id INT
 );
 
-insert into User VALUES (0, 'root', '123456', 2, -1);
-insert into User VALUES (1, 'test0', '123456', 1, 0);
-insert into User VALUES (2, 'test1', '123456', 1, 0);
-insert into User VALUES (3, 'test2', '123456', 1, 1);
+insert into user(username, password, level, depart_id) VALUES ('root', '123456', 2, -1);
+insert into user(username, password, level, depart_id) VALUES ('test0', '123456', 1, 0);
+insert into user(username, password, level, depart_id) VALUES ('test1', '123456', 1, 0);
+insert into user(username, password, level, depart_id) VALUES ('test2', '123456', 1, 1);

@@ -1,9 +1,9 @@
-drop table Depart;
+drop table depart;
 
-create table Depart (
-    id INT PRIMARY KEY,
+create table depart (
+    id INT PRIMARY KEY AUTO_INCREMENT,
     name CHAR(16)
 );
 
-insert into Depart VALUES (0, '公司0');
-insert into Depart VALUES (1, '公司1');
+insert into depart(name) VALUES ('公司0');
+insert into depart(name) VALUES ('公司1');

@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum ReturnNo {
     OK(200, 200, "成功"),
-    CREATED(200, 201, "创建成功"),
+    CREATED(201, 201, "创建成功"),
 
     FIELD_INVALID(400, 400, "%s字段不合法"),
     IMAGE_SIZE_EXCEED(400, 401, "图片大小超限(最大：%s)"),
@@ -17,7 +17,6 @@ public enum ReturnNo {
     AUTH_LOGIN_REQUIRED(401, 413, "需要先登录"),
 
     AUTH_NO_RIGHT(403, 430, "权限不足"),
-    INVALID_SUPER_KEY(403, 431, "SUPER KEY不合法"),
 
     RESOURCE_NOT_EXIST(404, 404, "%s(id=%d)不存在"),
 

@@ -1,10 +1,20 @@
 package com.employeeinfomanager.common;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 public class Utils {
+    public static final Logger logger = LoggerFactory.getLogger(Utils.class);
+
     public static String genSeqNum(int platform) {
         int maxNum = 36;
         int i;
@@ -32,5 +42,19 @@ public class Utils {
 
         buffer.append(str[platform - 1]);
         return buffer.toString();
+    }
+
+    public static <T> T getJsonField(String body, String field, Class<T> clazz) {
+        ObjectMapper mapper = new ObjectMapper().registerModule(new Jdk8Module())
+                .registerModule(new JavaTimeModule());
+        JsonNode node;
+        try {
+            node = mapper.readTree(body);
+            node = node.get(field);
+            return mapper.treeToValue(node, clazz);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
     }
 }

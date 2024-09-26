@@ -3,6 +3,7 @@ package com.employeeinfomanager.controller;
 import com.employeeinfomanager.aop.Audit;
 import com.employeeinfomanager.aop.AuditLevel;
 import com.employeeinfomanager.aop.LoginUser;
+import com.employeeinfomanager.common.BusinessException;
 import com.employeeinfomanager.common.PageDto;
 import com.employeeinfomanager.common.ReturnNo;
 import com.employeeinfomanager.common.ReturnObject;
@@ -23,6 +24,9 @@ import javax.validation.Valid;
 public class UserController {
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
+    private static final String USERNAME_REGEX = "[0-9a-zA-Z_]{4,16}";
+    private static final String PASSWORD_REGEX = "[0-9a-zA-Z_]{4,16}";
+
     private final UserService userService;
 
     @Autowired
@@ -33,6 +37,10 @@ public class UserController {
     @PostMapping("/create")
     @Audit(AuditLevel.ROOT)
     public ReturnObject createUser(@Valid @RequestBody CreateUserVo vo) {
+        if (!vo.getUsername().matches(USERNAME_REGEX))
+            return new ReturnObject(ReturnNo.FIELD_INVALID, String.format(ReturnNo.FIELD_INVALID.getMessage(), "用户名"));
+        if (!vo.getPassword().matches(PASSWORD_REGEX))
+            return new ReturnObject(ReturnNo.FIELD_INVALID, String.format(ReturnNo.FIELD_INVALID.getMessage(), "密码"));
         this.userService.createUser(vo.getUsername(), vo.getPassword(), vo.getDepartId());
         return new ReturnObject(ReturnNo.CREATED);
     }
@@ -68,6 +76,8 @@ public class UserController {
     @PostMapping("/update")
     @Audit
     public ReturnObject updatePassword(@LoginUser Long userId, @Valid @RequestBody UpdatePasswordVo vo) {
+        if (!vo.getNewPassword().matches(PASSWORD_REGEX))
+            return new ReturnObject(ReturnNo.FIELD_INVALID, String.format(ReturnNo.FIELD_INVALID.getMessage(), "新密码"));
         this.userService.updatePassword(userId, vo.getOldPassword(), vo.getNewPassword());
         return new ReturnObject(ReturnNo.OK);
     }

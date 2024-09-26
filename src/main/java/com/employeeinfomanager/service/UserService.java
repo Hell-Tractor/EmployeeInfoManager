@@ -46,8 +46,9 @@ public class UserService {
     }
 
     public PageDto<UserDto> retrieveUsers(int page, int pageSize) {
-        List<UserDto> users = this.userDao.retrieveAll(page, pageSize).stream().map(UserService::getDto).toList();
-        return new PageDto<>(users, page, users.size());
+        List<User> users = this.userDao.retrieveAll(page, pageSize);
+        List<UserDto> result = users.stream().map(UserService::getDto).toList();
+        return new PageDto<>(result, page, result.size());
     }
 
     public void deleteUser(Long userId) {
