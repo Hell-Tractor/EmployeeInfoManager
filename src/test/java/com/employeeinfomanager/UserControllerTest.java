@@ -5,14 +5,18 @@ import com.employeeinfomanager.aop.UserToken;
 import com.employeeinfomanager.common.JwtHelper;
 import com.employeeinfomanager.common.ReturnNo;
 import com.employeeinfomanager.common.Utils;
+import com.employeeinfomanager.dao.DepartDao;
+import com.employeeinfomanager.dao.bo.Depart;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -24,8 +28,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
+    @MockBean
+    private DepartDao departDao;
 
     private static String rootToken;
     private static String adminToken;
@@ -48,6 +52,8 @@ public class UserControllerTest {
 
     @Test
     public void createUserTest0() throws Exception {
+        Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
+
         String requestJson = "{ \"username\": \"__test\", \"password\": \"123456\", \"departId\": 0 }";
 
         this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_USER)
@@ -60,6 +66,8 @@ public class UserControllerTest {
 
     @Test
     public void createUserTest1() throws Exception {
+        Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
+
         String requestJson = "{ \"username\": \"__test\", \"password\": \"123456\", \"departId\": 0 }";
 
         this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_USER)
@@ -71,6 +79,8 @@ public class UserControllerTest {
 
     @Test
     public void createUserTest2() throws Exception {
+        Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
+
         String requestJson = "{ \"username\": \"__test\", \"password\": \"123456\", \"departId\": 0 }";
 
         this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_USER)
@@ -83,6 +93,8 @@ public class UserControllerTest {
 
     @Test
     public void createUserTest3() throws Exception {
+        Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
+
         String requestJson = "{ \"username\": \"te\", \"password\": \"123456\", \"departId\": 0 }";
 
         this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_USER)
@@ -95,6 +107,8 @@ public class UserControllerTest {
 
     @Test
     public void createUserTest4() throws Exception {
+        Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
+
         String requestJson = "{ \"username\": \"__test\", \"password\": \"测试测试测试\", \"departId\": 0 }";
 
         this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_USER)
@@ -107,6 +121,8 @@ public class UserControllerTest {
 
     @Test
     public void loginTest0() throws Exception {
+        Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
+
         String requestJson = "{ \"username\": \"test0\", \"password\": \"123456\" }";
         String response = this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -123,6 +139,8 @@ public class UserControllerTest {
 
     @Test
     public void retrieveUserTest0() throws Exception {
+        Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
+
         this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_USERS)
                     .header("authorization", rootToken)
                     .contentType(MediaType.APPLICATION_JSON))
@@ -132,6 +150,8 @@ public class UserControllerTest {
 
     @Test
     public void retrieveUserTest1() throws Exception {
+        Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
+
         this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_USERS)
                         .header("authorization", rootToken)
                         .queryParam("pageSize", "1")
@@ -142,6 +162,8 @@ public class UserControllerTest {
 
     @Test
     public void retrieveUserTest2() throws Exception {
+        Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
+
         this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_USERS)
                         .header("authorization", rootToken)
                         .queryParam("page", "2")
@@ -153,6 +175,8 @@ public class UserControllerTest {
 
     @Test
     public void deleteUserForceTest0() throws Exception {
+        Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
+
         this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_USER_FORCE)
                         .header("authorization", rootToken)
                         .queryParam("userId", "2")
@@ -163,6 +187,8 @@ public class UserControllerTest {
 
     @Test
     public void deleteUserForceTest1() throws Exception {
+        Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
+
         this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_USER_FORCE)
                         .header("authorization", rootToken)
                         .queryParam("userId", "1")
@@ -173,6 +199,8 @@ public class UserControllerTest {
 
     @Test
     public void deleteUserForceTest2() throws Exception {
+        Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
+
         this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_USER_FORCE)
                         .header("authorization", adminToken)
                         .queryParam("userId", "2")
@@ -183,6 +211,8 @@ public class UserControllerTest {
 
     @Test
     public void deleteSelfTest0() throws Exception {
+        Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
+
         String loginJson = "{ \"username\": \"test0\", \"password\": \"123456\" }";
         String response = this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -199,6 +229,8 @@ public class UserControllerTest {
 
     @Test
     public void deleteSelfTest1() throws Exception {
+        Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
+
         String loginJson = "{ \"username\": \"root\", \"password\": \"123456\" }";
         String response = this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -216,6 +248,8 @@ public class UserControllerTest {
 
     @Test
     public void updatePasswordTest0() throws Exception {
+        Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
+
         String loginJson = "{ \"username\": \"test0\", \"password\": \"123456\" }";
         String response = this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
                         .contentType(MediaType.APPLICATION_JSON)
