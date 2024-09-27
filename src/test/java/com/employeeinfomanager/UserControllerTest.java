@@ -7,7 +7,6 @@ import com.employeeinfomanager.common.ReturnNo;
 import com.employeeinfomanager.common.Utils;
 import com.employeeinfomanager.dao.DepartDao;
 import com.employeeinfomanager.dao.bo.Depart;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
