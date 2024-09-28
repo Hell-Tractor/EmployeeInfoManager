@@ -1,10 +1,7 @@
 package com.employeeinfomanager.service;
 
 import com.employeeinfomanager.aop.AuditLevel;
-import com.employeeinfomanager.common.BusinessException;
-import com.employeeinfomanager.common.JwtHelper;
-import com.employeeinfomanager.common.PageDto;
-import com.employeeinfomanager.common.ReturnNo;
+import com.employeeinfomanager.common.*;
 import com.employeeinfomanager.dao.UserDao;
 import com.employeeinfomanager.dao.bo.User;
 import com.employeeinfomanager.service.dto.UserDto;
@@ -35,9 +32,20 @@ public class UserService {
         this.userDao.insert(user);
     }
 
-    public String login(String username, String password) {
+    public String getLoginSalt(String username) {
         User user = this.userDao.findByUsername(username);
-        if (!password.equals(user.getPassword())) {
+        user.setSalt(Utils.getRandomSalt());
+        this.userDao.save(user);
+        return user.getSalt();
+    }
+
+    public String login(String username, String password, String salt) {
+        User user = this.userDao.findByUsername(username);
+        if (!salt.equals(user.getSalt())) {
+            throw new BusinessException(ReturnNo.BAD_SALT);
+        }
+        String md5Password = Utils.getMD5(user.getPassword() + user.getSalt());
+        if (!password.equals(md5Password)) {
             throw new BusinessException(ReturnNo.AUTH_INVALID_ACCOUNT);
         }
 

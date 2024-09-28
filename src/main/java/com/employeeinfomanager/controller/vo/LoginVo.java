@@ -13,4 +13,7 @@ public class LoginVo {
     @NotNull
     @Size(min = 6, max = 16)
     private String password;
+    @NotNull
+    @Size(min = 8, max = 8)
+    private String salt;
 }

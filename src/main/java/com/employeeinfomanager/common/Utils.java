@@ -8,12 +8,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 public class Utils {
     public static final Logger logger = LoggerFactory.getLogger(Utils.class);
+
+    private static final String RANDOM_CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     public static String genSeqNum(int platform) {
         int maxNum = 36;
@@ -56,5 +60,32 @@ public class Utils {
             logger.error(e.getMessage(), e);
         }
         return null;
+    }
+
+    public static String getRandomSalt() {
+        Random random = new Random();
+        StringBuilder builder = new StringBuilder(8);
+
+        for (int i = 0; i < 8; ++i) {
+            int index = random.nextInt(RANDOM_CHARSET.length());
+            builder.append(RANDOM_CHARSET.charAt(index));
+        }
+
+        return builder.toString();
+    }
+
+    public static String getMD5(String s) {
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            byte[] hashBytes = md5.digest(s.getBytes());
+
+            StringBuilder builder = new StringBuilder();
+            for (byte b : hashBytes)
+                builder.append(String.format("%02x", b));
+            return builder.toString();
+        } catch (NoSuchAlgorithmException e) {
+            logger.error("MD5 algorithm not found");
+            return "";
+        }
     }
 }

@@ -5,6 +5,7 @@ create table user (
     username CHAR(16),
     password CHAR(16),
     level TINYINT,
+    salt CHAR(8) DEFAULT NULL,
     depart_id INT
 );
 

@@ -16,6 +16,7 @@ public class UserPo {
     private String username;
     private String password;
     private int level;
+    private String salt;
 
     // foreign key
     private Long departId;

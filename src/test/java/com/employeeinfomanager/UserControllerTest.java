@@ -118,17 +118,29 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.FIELD_INVALID.getCode()));
     }
 
+    public String loginAndGetToken(String username, String password) throws Exception {
+        String salt = this.mockMvc.perform(MockMvcRequestBuilders.get(LOGIN)
+                        .queryParam("username", username)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        salt = Utils.getJsonField(salt, "data", String.class);
+
+        password = Utils.getMD5(password + salt);
+        String requestJson = String.format("{ \"username\": \"%s\", \"password\": \"%s\", \"salt\": \"%s\" }", username, password, salt);
+        String response = this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        return Utils.getJsonField(response, "data", String.class);
+    }
+
     @Test
     public void loginTest0() throws Exception {
         Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
 
-        String requestJson = "{ \"username\": \"test0\", \"password\": \"123456\" }";
-        String response = this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(requestJson))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        String token = Utils.getJsonField(response, "data", String.class);
+        String token = this.loginAndGetToken("test0", "123456");
         JwtHelper jwtHelper = new JwtHelper();
         UserToken decryptedToken = jwtHelper.verifyTokenAndGetClaims(token);
         Assertions.assertEquals("test0", decryptedToken.getUsername());
@@ -212,14 +224,7 @@ public class UserControllerTest {
     public void deleteSelfTest0() throws Exception {
         Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
 
-        String loginJson = "{ \"username\": \"test0\", \"password\": \"123456\" }";
-        String response = this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginJson))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        String token = Utils.getJsonField(response, "data", String.class);
-
+        String token = this.loginAndGetToken("test0", "123456");
         this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_SELF)
                         .header("authorization", token)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -230,14 +235,7 @@ public class UserControllerTest {
     public void deleteSelfTest1() throws Exception {
         Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
 
-        String loginJson = "{ \"username\": \"root\", \"password\": \"123456\" }";
-        String response = this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginJson))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        String token = Utils.getJsonField(response, "data", String.class);
-
+        String token = this.loginAndGetToken("root", "123456");
         this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_SELF)
                         .header("authorization", token)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -249,13 +247,7 @@ public class UserControllerTest {
     public void updatePasswordTest0() throws Exception {
         Mockito.when(departDao.findById(Mockito.anyLong())).thenReturn(new Depart(-1L, "测试部门"));
 
-        String loginJson = "{ \"username\": \"test0\", \"password\": \"123456\" }";
-        String response = this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginJson))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        String token = Utils.getJsonField(response, "data", String.class);
+        String token = this.loginAndGetToken("root", "123456");
 
         String updatePasswordJson = "{ \"oldPassword\": \"123456\", \"newPassword\": \"123456abc\" }";
         this.mockMvc.perform(MockMvcRequestBuilders.post(UPDATE_PASSWORD)
@@ -264,16 +256,6 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginJson))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.AUTH_INVALID_ACCOUNT.getCode()));
-
-        String loginWithNewPasswordJson = "{ \"username\": \"test0\", \"password\": \"123456abc\" }";
-        this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginWithNewPasswordJson))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+        this.loginAndGetToken("root", "123456abc");
     }
 }

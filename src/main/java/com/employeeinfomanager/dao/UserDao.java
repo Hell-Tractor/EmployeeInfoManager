@@ -33,19 +33,23 @@ public class UserDao {
     }
 
     private User getBo(UserPo po) {
-        User bo = User.builder().id(po.getId()).username(po.getUsername()).password(po.getPassword())
+        User bo = User.builder().id(po.getId()).username(po.getUsername()).password(po.getPassword()).salt(po.getSalt())
                 .level(AuditLevel.values()[po.getLevel()]).departId(po.getDepartId()).build();
         this.setBo(bo);
         return bo;
     }
 
     private UserPo getPo(User bo) {
-        return UserPo.builder().id(bo.getId()).username(bo.getUsername()).password(bo.getPassword())
+        return UserPo.builder().id(bo.getId()).username(bo.getUsername()).password(bo.getPassword()).salt(bo.getSalt())
                 .level(bo.getLevel().ordinal()).departId(bo.getDepartId()).build();
     }
 
     public List<User> retrieveAll(int page, int pageSize) {
         return this.mapper.findAll(PageRequest.of(page - 1, pageSize)).stream().map(this::getBo).toList();
+    }
+
+    public List<User> retrieveByDepartId(Long id) {
+        return this.mapper.findAllByDepartId(id).stream().map(this::getBo).toList();
     }
 
     public User findById(Long id) {

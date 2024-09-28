@@ -44,9 +44,15 @@ public class UserController {
         return new ReturnObject(ReturnNo.CREATED);
     }
 
+    @GetMapping("/login")
+    public ReturnObject getLoginSalt(@RequestParam String username) {
+        String salt = this.userService.getLoginSalt(username);
+        return new ReturnObject(ReturnNo.OK, ReturnNo.OK.getMessage(), salt);
+    }
+
     @PostMapping("/login")
     public ReturnObject login(@Valid @RequestBody LoginVo vo) {
-        String token = this.userService.login(vo.getUsername(), vo.getPassword());
+        String token = this.userService.login(vo.getUsername(), vo.getPassword(), vo.getSalt());
         return new ReturnObject(ReturnNo.OK, ReturnNo.OK.getMessage(), token);
     }
 

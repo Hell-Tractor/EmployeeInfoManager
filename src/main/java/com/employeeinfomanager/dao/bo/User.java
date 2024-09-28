@@ -16,8 +16,10 @@ public class User {
     private String password;
     @Getter @Setter
     private AuditLevel level;
-
     @Getter @Setter
+    private String salt;
+
+    @Getter
     private Long departId;
     private Depart depart;
     @Setter
@@ -28,6 +30,12 @@ public class User {
         if (null == this.depart && null != this.departDao)
             this.depart = this.departDao.findById(this.departId);
         return this.depart;
+    }
+    public void setDepartId(Long departId) {
+        if (departId == this.departId)
+            return;
+        this.departId = departId;
+        this.depart = null;
     }
 
     public User(String username, String password, AuditLevel level, Long departId) {
