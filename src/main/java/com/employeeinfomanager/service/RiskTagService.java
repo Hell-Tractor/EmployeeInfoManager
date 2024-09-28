@@ -2,8 +2,8 @@ package com.employeeinfomanager.service;
 
 import com.employeeinfomanager.common.BusinessException;
 import com.employeeinfomanager.common.ReturnNo;
+import com.employeeinfomanager.dao.EmploymentDao;
 import com.employeeinfomanager.dao.RiskTagDao;
-import com.employeeinfomanager.dao.StaffDao;
 import com.employeeinfomanager.dao.bo.RiskTag;
 import com.employeeinfomanager.service.dto.RiskTagDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +14,12 @@ import java.util.List;
 @Service
 public class RiskTagService {
     private final RiskTagDao riskTagDao;
-    private final StaffDao staffDao;
+    private final EmploymentDao employmentDao;
 
     @Autowired
-    public RiskTagService(RiskTagDao riskTagDao, StaffDao staffDao) {
+    public RiskTagService(RiskTagDao riskTagDao, EmploymentDao employmentDao) {
         this.riskTagDao = riskTagDao;
-        this.staffDao = staffDao;
+        this.employmentDao = employmentDao;
     }
 
     private RiskTagDto getDto(RiskTag bo) {
@@ -32,7 +32,7 @@ public class RiskTagService {
     }
 
     public void deleteRiskTag(Long id) {
-        if (!this.staffDao.retrieveStaffIdByRiskTagId(id).isEmpty()) {
+        if (!this.employmentDao.retrieveDistinctEmploymentIdsByRiskTagId(id).isEmpty()) {
             throw new BusinessException(ReturnNo.RISK_TAG_STILL_IN_USE, String.format(ReturnNo.RISK_TAG_STILL_IN_USE.getMessage(), id));
         }
         this.riskTagDao.deleteById(id);

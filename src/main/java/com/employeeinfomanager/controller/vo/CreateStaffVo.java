@@ -1,15 +1,14 @@
-package com.employeeinfomanager.dao.bo;
+package com.employeeinfomanager.controller.vo;
 
-import lombok.*;
+import lombok.Data;
+
+import javax.validation.constraints.Size;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class Staff {
-    private Long id;
+public class CreateStaffVo {
     private String name;
     private String image;
+    @Size(min = 1900, max = 2100)
     private int bornYear;
     private String personId;
     private String experience;

@@ -51,6 +51,15 @@ public class AuditAspect {
                 }
             }
         }
+
+        for (int i = 0; i < annotations.length; ++i) {
+            for (Annotation annotation : annotations[i]) {
+                if (annotation.annotationType().equals(LoginUserToken.class)) {
+                    args[i] = token;
+                    break;
+                }
+            }
+        }
     }
 
     private void checkAuditLevel(Method method, UserToken decryptedToken) throws BusinessException {

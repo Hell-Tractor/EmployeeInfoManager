@@ -1,12 +1,9 @@
-package com.employeeinfomanager.dao.bo;
+package com.employeeinfomanager.controller.vo;
 
-import lombok.*;
+import lombok.Data;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class Staff {
+public class UpdateStaffVo {
     private Long id;
     private String name;
     private String image;

@@ -1,7 +1,7 @@
 package com.employeeinfomanager.dao;
 
 import com.employeeinfomanager.Mapper.RiskTagPoMapper;
-import com.employeeinfomanager.Mapper.StaffRiskTagPoMapper;
+import com.employeeinfomanager.Mapper.EmploymentRiskTagPoMapper;
 import com.employeeinfomanager.Mapper.po.RiskTagPo;
 import com.employeeinfomanager.common.BusinessException;
 import com.employeeinfomanager.common.ReturnNo;
@@ -14,11 +14,11 @@ import java.util.Optional;
 @Repository
 public class RiskTagDao {
     private final RiskTagPoMapper riskTagPoMapper;
-    private final StaffRiskTagPoMapper staffRiskTagPoMapper;
+    private final EmploymentRiskTagPoMapper employmentRiskTagPoMapper;
 
-    public RiskTagDao(RiskTagPoMapper riskTagPoMapper, StaffRiskTagPoMapper staffRiskTagPoMapper) {
+    public RiskTagDao(RiskTagPoMapper riskTagPoMapper, EmploymentRiskTagPoMapper employmentRiskTagPoMapper) {
         this.riskTagPoMapper = riskTagPoMapper;
-        this.staffRiskTagPoMapper = staffRiskTagPoMapper;
+        this.employmentRiskTagPoMapper = employmentRiskTagPoMapper;
     }
 
     private RiskTag getBo(RiskTagPo po) {
@@ -29,8 +29,8 @@ public class RiskTagDao {
         return new RiskTagPo(bo.getId(), bo.getName());
     }
 
-    public List<RiskTag> retrieveByStaffId(Long staffId) {
-        return this.staffRiskTagPoMapper.findAllByStaffId(staffId).stream()
+    public List<RiskTag> retrieveByEmploymentId(Long employmentId) {
+        return this.employmentRiskTagPoMapper.findAllByEmploymentId(employmentId).stream()
                 .map(item -> this.findById(item.getId()))
                 .toList();
     }

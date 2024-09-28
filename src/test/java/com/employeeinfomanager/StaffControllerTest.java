@@ -4,8 +4,8 @@ import com.employeeinfomanager.aop.AuditLevel;
 import com.employeeinfomanager.common.JwtHelper;
 import com.employeeinfomanager.common.ReturnNo;
 import com.employeeinfomanager.dao.EmploymentDao;
-import com.employeeinfomanager.dao.RiskTagDao;
-import com.employeeinfomanager.dao.bo.RiskTag;
+import com.employeeinfomanager.dao.StaffDao;
+import com.employeeinfomanager.dao.bo.Staff;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,22 +26,21 @@ import java.util.List;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class RiskTagControllerTest {
+public class StaffControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private RiskTagDao riskTagDao;
     @MockBean
     private EmploymentDao employmentDao;
-
+    @Autowired
+    private StaffDao staffDao;
     private static String rootToken;
 
     /*---------------------API LIST---------------------*/
-    private static final String CREATE_RISK_TAG = "/risk_tag";
-    private static final String DELETE_RISK_TAG = "/risk_tag";
-    private static final String UPDATE_RISK_TAG = "/risk_tag/update";
-    private static final String RETRIEVE_RISK_TAG = "/risk_tag";
+    private static final String CREATE_STAFF = "/staff";
+    private static final String DELETE_STAFF = "/staff";
+    private static final String UPDATE_STAFF = "/staff/update";
+    private static final String GET_STAFF = "/staff";
     /*--------------------------------------------------*/
 
     @BeforeAll
@@ -51,9 +50,9 @@ public class RiskTagControllerTest {
     }
 
     @Test
-    public void createRiskTagTest0() throws Exception {
-        String requestJson = "{ \"name\": \"溶解\" }";
-        this.mockMvc.perform(MockMvcRequestBuilders.put(CREATE_RISK_TAG)
+    public void createStaffTest0() throws Exception {
+        String requestJson = "{ \"name\": \"测试\", \"image\": \"test_image\", \"bornYear\": 1980, \"personId\": 142700198001010000, \"experience\": \"\", \"physicalCondition\": \"\", \"appendix\": \"\" }";
+        this.mockMvc.perform(MockMvcRequestBuilders.put(CREATE_STAFF)
                         .header("authorization", rootToken)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -62,9 +61,9 @@ public class RiskTagControllerTest {
     }
 
     @Test
-    public void createRiskTagTest1() throws Exception {
-        String requestJson = "{ \"name\": \"溶解解解解解解解解\" }";
-        this.mockMvc.perform(MockMvcRequestBuilders.put(CREATE_RISK_TAG)
+    public void createStaffTest1() throws Exception {
+        String requestJson = "{ \"name\": \"测试 \", \"image\": \"test_image\", \"bornYear\": 1980, \"personId\": 142700198001010000, \"experience\": \"\", \"physicalCondition\": \"\", \"appendix\": \"\" }";
+        this.mockMvc.perform(MockMvcRequestBuilders.put(CREATE_STAFF)
                         .header("authorization", rootToken)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -73,21 +72,21 @@ public class RiskTagControllerTest {
     }
 
     @Test
-    public void createRiskTagTest2() throws Exception {
-        String requestJson = "{ \"name\": \"高处\" }";
-        this.mockMvc.perform(MockMvcRequestBuilders.put(CREATE_RISK_TAG)
+    public void createStaffTest2() throws Exception {
+        String requestJson = "{ \"name\": \"测试\", \"image\": \"test_image\", \"bornYear\": 1980, \"personId\": 142700198501010000, \"experience\": \"\", \"physicalCondition\": \"\", \"appendix\": \"\" }";
+        this.mockMvc.perform(MockMvcRequestBuilders.put(CREATE_STAFF)
                         .header("authorization", rootToken)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.RISK_TAG_EXIST.getCode()));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.STAFF_EXIST.getCode()));
     }
 
     @Test
     public void deleteRiskTagTest0() throws Exception {
-        Mockito.when(employmentDao.retrieveDistinctEmploymentIdsByRiskTagId(Mockito.anyLong())).thenReturn(new ArrayList<>());
+        Mockito.when(employmentDao.retrieveEmploymentIdsByStaffId(Mockito.anyLong())).thenReturn(new ArrayList<>());
 
-        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_RISK_TAG)
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_STAFF)
                         .header("authorization", rootToken)
                         .queryParam("id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -97,9 +96,9 @@ public class RiskTagControllerTest {
 
     @Test
     public void deleteRiskTagTest1() throws Exception {
-        Mockito.when(employmentDao.retrieveDistinctEmploymentIdsByRiskTagId(Mockito.anyLong())).thenReturn(new ArrayList<>());
+        Mockito.when(employmentDao.retrieveEmploymentIdsByStaffId(Mockito.anyLong())).thenReturn(new ArrayList<>());
 
-        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_RISK_TAG)
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_STAFF)
                         .header("authorization", rootToken)
                         .queryParam("id", "100")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -111,36 +110,48 @@ public class RiskTagControllerTest {
     public void deleteRiskTagTest2() throws Exception {
         List<Long> ids = new ArrayList<>();
         ids.add(1L);
-        Mockito.when(employmentDao.retrieveDistinctEmploymentIdsByRiskTagId(Mockito.anyLong())).thenReturn(ids);
+        Mockito.when(employmentDao.retrieveEmploymentIdsByStaffId(Mockito.anyLong())).thenReturn(ids);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_RISK_TAG)
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_STAFF)
                         .header("authorization", rootToken)
                         .queryParam("id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.RISK_TAG_STILL_IN_USE.getCode()));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.STAFF_STILL_IN_USE.getCode()));
     }
 
     @Test
-    public void updateRiskTagTest0() throws Exception {
-        String requestJson = "{\"id\": 1, \"name\": \"测试\"}";
-        this.mockMvc.perform(MockMvcRequestBuilders.get(UPDATE_RISK_TAG)
+    public void updateStaffTest0() throws Exception {
+        String requestJson = "{ \"id\": 1, \"name\": \"测试\", \"image\": \"test_image\", \"bornYear\": 1980, \"personId\": 142700198001010000, \"experience\": \"\", \"physicalCondition\": \"\", \"appendix\": \"\" }";
+        this.mockMvc.perform(MockMvcRequestBuilders.get(UPDATE_STAFF)
                         .header("authorization", rootToken)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.OK.getCode()));
 
-        RiskTag tag = this.riskTagDao.findById(1L);
-        Assertions.assertEquals("测试", tag.getName());
+        Staff staff = this.staffDao.findById(1L);
+        Assertions.assertEquals("测试", staff.getName());
     }
 
     @Test
-    public void retrieveRiskTagsTest0() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_RISK_TAG)
+    public void getStaffTest0() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get(GET_STAFF)
                         .header("authorization", rootToken)
+                        .queryParam("personId", "142700198501010000")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.length()").value(6));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.OK.getCode()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.name").value("张三"));
+    }
+
+    @Test
+    public void getStaffTest1() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get(GET_STAFF)
+                        .header("authorization", rootToken)
+                        .queryParam("personId", "142700198501010001")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.STAFF_NOT_EXIST.getCode()));
     }
 }

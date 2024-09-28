@@ -1,12 +1,7 @@
 package com.employeeinfomanager.Mapper.po;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
+import lombok.*;
 
 @Entity
 @Table(name = "staff")
@@ -22,13 +17,7 @@ public class StaffPo {
     private String image;
     private int bornYear;
     private String personId;
-    private Long departId;  // foreign key
-    private String project;
-    private LocalDate validSince;
-    private LocalDate validUntil;
-    private String workPermit;
     private String experience;
     private String physicalCondition;
-    private String violation;
     private String appendix;
 }
