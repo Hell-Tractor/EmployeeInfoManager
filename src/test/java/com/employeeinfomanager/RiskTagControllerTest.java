@@ -3,10 +3,9 @@ package com.employeeinfomanager;
 import com.employeeinfomanager.aop.AuditLevel;
 import com.employeeinfomanager.common.JwtHelper;
 import com.employeeinfomanager.common.ReturnNo;
-import com.employeeinfomanager.dao.DepartDao;
-import com.employeeinfomanager.dao.UserDao;
-import com.employeeinfomanager.dao.bo.Depart;
-import com.employeeinfomanager.dao.bo.User;
+import com.employeeinfomanager.dao.RiskTagDao;
+import com.employeeinfomanager.dao.StaffDao;
+import com.employeeinfomanager.dao.bo.RiskTag;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,22 +26,22 @@ import java.util.List;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class DepartControllerTest {
+public class RiskTagControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private DepartDao departDao;
+    private RiskTagDao riskTagDao;
     @MockBean
-    private UserDao userDao;
+    private StaffDao staffDao;
 
     private static String rootToken;
 
     /*---------------------API LIST---------------------*/
-    private static final String CREATE_DEPART = "/depart";
-    private static final String DELETE_DEPART = "/depart";
-    private static final String UPDATE_DEPART = "/depart/update";
-    private static final String RETRIEVE_DEPARTS = "/depart";
+    private static final String CREATE_RISK_TAG = "/risk_tag";
+    private static final String DELETE_RISK_TAG = "/risk_tag";
+    private static final String UPDATE_RISK_TAG = "/risk_tag/update";
+    private static final String RETRIEVE_RISK_TAG = "/risk_tag";
     /*--------------------------------------------------*/
 
     @BeforeAll
@@ -52,9 +51,9 @@ public class DepartControllerTest {
     }
 
     @Test
-    public void createDepartTest0() throws Exception {
-        String requestJson = "{ \"name\": \"某某公司\" }";
-        this.mockMvc.perform(MockMvcRequestBuilders.put(CREATE_DEPART)
+    public void createRiskTagTest0() throws Exception {
+        String requestJson = "{ \"name\": \"溶解\" }";
+        this.mockMvc.perform(MockMvcRequestBuilders.put(CREATE_RISK_TAG)
                         .header("authorization", rootToken)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -63,9 +62,9 @@ public class DepartControllerTest {
     }
 
     @Test
-    public void createDepartTest1() throws Exception {
-        String requestJson = "{ \"name\": \"1\" }";
-        this.mockMvc.perform(MockMvcRequestBuilders.put(CREATE_DEPART)
+    public void createRiskTagTest1() throws Exception {
+        String requestJson = "{ \"name\": \"溶解解解解解解解解\" }";
+        this.mockMvc.perform(MockMvcRequestBuilders.put(CREATE_RISK_TAG)
                         .header("authorization", rootToken)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -74,21 +73,21 @@ public class DepartControllerTest {
     }
 
     @Test
-    public void createDepartTest2() throws Exception {
-        String requestJson = "{ \"name\": \"公司0\" }";
-        this.mockMvc.perform(MockMvcRequestBuilders.put(CREATE_DEPART)
+    public void createRiskTagTest2() throws Exception {
+        String requestJson = "{ \"name\": \"高处\" }";
+        this.mockMvc.perform(MockMvcRequestBuilders.put(CREATE_RISK_TAG)
                         .header("authorization", rootToken)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.DEPART_EXIST.getCode()));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.RISK_TAG_EXIST.getCode()));
     }
 
     @Test
-    public void deleteDepartTest0() throws Exception {
-        Mockito.when(userDao.retrieveByDepartId(Mockito.anyLong())).thenReturn(new ArrayList<>());
+    public void deleteRiskTagTest0() throws Exception {
+        Mockito.when(staffDao.retrieveStaffIdByRiskTagId(Mockito.anyLong())).thenReturn(new ArrayList<>());
 
-        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_DEPART)
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_RISK_TAG)
                         .header("authorization", rootToken)
                         .queryParam("id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -97,10 +96,10 @@ public class DepartControllerTest {
     }
 
     @Test
-    public void deleteDepartTest1() throws Exception {
-        Mockito.when(userDao.retrieveByDepartId(Mockito.anyLong())).thenReturn(new ArrayList<>());
+    public void deleteRiskTagTest1() throws Exception {
+        Mockito.when(staffDao.retrieveStaffIdByRiskTagId(Mockito.anyLong())).thenReturn(new ArrayList<>());
 
-        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_DEPART)
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_RISK_TAG)
                         .header("authorization", rootToken)
                         .queryParam("id", "100")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -109,40 +108,39 @@ public class DepartControllerTest {
     }
 
     @Test
-    public void deleteDepartTest2() throws Exception {
-        User user = new User("test", "test", AuditLevel.ADMIN, 1L);
-        List<User> users = new ArrayList<>();
-        users.add(user);
-        Mockito.when(userDao.retrieveByDepartId(Mockito.anyLong())).thenReturn(users);
+    public void deleteRiskTagTest2() throws Exception {
+        List<Long> staffs = new ArrayList<>();
+        staffs.add(1L);
+        Mockito.when(staffDao.retrieveStaffIdByRiskTagId(Mockito.anyLong())).thenReturn(staffs);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_DEPART)
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_RISK_TAG)
                         .header("authorization", rootToken)
                         .queryParam("id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.DEPART_STILL_IN_USE.getCode()));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.RISK_TAG_STILL_IN_USE.getCode()));
     }
 
     @Test
-    public void updateDepartTest0() throws Exception {
-        String requestJson = "{ \"id\": 1, \"name\": \"测试公司\" }";
-        this.mockMvc.perform(MockMvcRequestBuilders.get(UPDATE_DEPART)
+    public void updateRiskTagTest0() throws Exception {
+        String requestJson = "{\"id\": 1, \"name\": \"测试\"}";
+        this.mockMvc.perform(MockMvcRequestBuilders.get(UPDATE_RISK_TAG)
                         .header("authorization", rootToken)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.OK.getCode()));
 
-        Depart depart = this.departDao.findById(1L);
-        Assertions.assertEquals("测试公司", depart.getName());
+        RiskTag tag = this.riskTagDao.findById(1L);
+        Assertions.assertEquals("测试", tag.getName());
     }
 
     @Test
-    public void retrieveDepartsTest0() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_DEPARTS)
+    public void retrieveRiskTagsTest0() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_RISK_TAG)
                         .header("authorization", rootToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list.length()").value(2));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.length()").value(6));
     }
 }

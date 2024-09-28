@@ -1,7 +1,10 @@
 package com.employeeinfomanager.service;
 
+import com.employeeinfomanager.common.BusinessException;
 import com.employeeinfomanager.common.PageDto;
+import com.employeeinfomanager.common.ReturnNo;
 import com.employeeinfomanager.dao.DepartDao;
+import com.employeeinfomanager.dao.UserDao;
 import com.employeeinfomanager.dao.bo.Depart;
 import com.employeeinfomanager.service.dto.DepartDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +16,12 @@ import java.util.List;
 public class DepartService {
 
     private final DepartDao departDao;
+    private final UserDao userDao;
 
     @Autowired
-    public DepartService(DepartDao departDao) {
+    public DepartService(DepartDao departDao, UserDao userDao) {
         this.departDao = departDao;
+        this.userDao = userDao;
     }
 
     public void createDepart(String name) {
@@ -25,6 +30,10 @@ public class DepartService {
     }
 
     public void deleteDepart(Long id) {
+        if (!this.userDao.retrieveByDepartId(id).isEmpty()) {
+            throw new BusinessException(ReturnNo.DEPART_STILL_IN_USE, String.format(ReturnNo.DEPART_STILL_IN_USE.getMessage(), id));
+        }
+        // todo: check if depart is used in any staff
         this.departDao.deleteById(id);
     }
 
