@@ -99,6 +99,11 @@ public class EmploymentDao {
         this.employmentPoMapper.save(getPo(employment));
     }
 
+    public void deleteById(Long id) {
+        this.findById(id);
+        this.employmentPoMapper.deleteById(id);
+    }
+
     private void checkBo(Employment employment) {
         setBo(employment);
         if (null == employment.getStaff())

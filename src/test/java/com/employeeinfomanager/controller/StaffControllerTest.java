@@ -1,4 +1,4 @@
-package com.employeeinfomanager;
+package com.employeeinfomanager.controller;
 
 import com.employeeinfomanager.aop.AuditLevel;
 import com.employeeinfomanager.common.JwtHelper;
@@ -18,7 +18,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;

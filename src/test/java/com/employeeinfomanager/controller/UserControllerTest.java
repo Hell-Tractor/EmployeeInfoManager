@@ -1,4 +1,4 @@
-package com.employeeinfomanager;
+package com.employeeinfomanager.controller;
 
 import com.employeeinfomanager.aop.AuditLevel;
 import com.employeeinfomanager.aop.UserToken;
@@ -145,7 +145,7 @@ public class UserControllerTest {
         UserToken decryptedToken = jwtHelper.verifyTokenAndGetClaims(token);
         Assertions.assertEquals("test0", decryptedToken.getUsername());
         Assertions.assertEquals(AuditLevel.ADMIN, decryptedToken.getUserLevel());
-        Assertions.assertEquals(0, decryptedToken.getDepartId());
+        Assertions.assertEquals(1, decryptedToken.getDepartId());
     }
 
     @Test

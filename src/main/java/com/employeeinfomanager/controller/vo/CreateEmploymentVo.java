@@ -24,4 +24,6 @@ public class CreateEmploymentVo {
     private String workPermit;
     @NotNull
     private List<Long> riskTagIds;
+    @NotNull
+    private String violation;
 }

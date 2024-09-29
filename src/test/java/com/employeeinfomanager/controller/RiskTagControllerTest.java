@@ -1,4 +1,4 @@
-package com.employeeinfomanager;
+package com.employeeinfomanager.controller;
 
 import com.employeeinfomanager.aop.AuditLevel;
 import com.employeeinfomanager.common.JwtHelper;

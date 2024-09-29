@@ -59,8 +59,16 @@ public class EmploymentService {
         this.checkPermissions(token, vo.getDepartId());
         Employment bo = Employment.builder().id(null).staffId(vo.getStaffId()).departId(vo.getDepartId())
                 .project(vo.getProject()).validSince(vo.getValidSince()).validUntil(vo.getValidUntil())
-                .workPermit(vo.getWorkPermit()).build();
+                .workPermit(vo.getWorkPermit()).violation(vo.getViolation()).build();
         this.employmentDao.insert(bo, vo.getRiskTagIds());
+    }
+
+    @Transactional
+    public void deleteEmployment(UserToken token, Long id) {
+        Employment employment = this.employmentDao.findById(id);
+        this.checkPermissions(token, employment.getDepartId());
+
+        this.employmentDao.deleteById(id);
     }
 
     @Transactional
@@ -81,7 +89,7 @@ public class EmploymentService {
         this.checkPermissions(token, vo.getDepartId());
         Employment bo = Employment.builder().id(vo.getId()).staffId(vo.getStaffId()).departId(vo.getDepartId())
                 .project(vo.getProject()).validSince(vo.getValidSince()).validUntil(vo.getValidUntil())
-                .workPermit(vo.getWorkPermit()).build();
+                .workPermit(vo.getWorkPermit()).violation(vo.getViolation()).build();
         this.employmentDao.save(bo);
     }
 

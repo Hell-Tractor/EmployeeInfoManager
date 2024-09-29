@@ -23,7 +23,7 @@ public class Employment {
         if (null == this.staffId)
             return null;
         if (null == this.staff && null != this.staffDao)
-            this.staff = this.staffDao.findById(id);
+            this.staff = this.staffDao.findById(this.staffId);
         return this.staff;
     }
     public void setStaffId(Long staffId) {

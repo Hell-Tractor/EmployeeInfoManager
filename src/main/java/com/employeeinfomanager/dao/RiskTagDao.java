@@ -1,8 +1,8 @@
 package com.employeeinfomanager.dao;
 
 import com.employeeinfomanager.Mapper.EmploymentPoMapper;
-import com.employeeinfomanager.Mapper.RiskTagPoMapper;
 import com.employeeinfomanager.Mapper.EmploymentRiskTagPoMapper;
+import com.employeeinfomanager.Mapper.RiskTagPoMapper;
 import com.employeeinfomanager.Mapper.po.EmploymentRiskTagPo;
 import com.employeeinfomanager.Mapper.po.RiskTagPo;
 import com.employeeinfomanager.common.BusinessException;
@@ -94,7 +94,7 @@ public class RiskTagDao {
         RiskTag tag = this.findById(riskTagId);
         Optional<EmploymentRiskTagPo> po = this.employmentRiskTagPoMapper.findByEmploymentIdAndRiskTagId(employmentId, riskTagId);
         if (po.isEmpty())
-            throw new BusinessException(ReturnNo.RISK_TAG_NOT_FOUND_IN_EMPLOYMENT, String.format(ReturnNo.RISK_TAG_NOT_FOUND_IN_EMPLOYMENT.getMessage(), tag.getName(), employmentId));
+            throw new BusinessException(ReturnNo.RISK_TAG_NOT_FOUND_IN_EMPLOYMENT, String.format(ReturnNo.RISK_TAG_NOT_FOUND_IN_EMPLOYMENT.getMessage(), employmentId, tag.getName()));
 
         this.employmentRiskTagPoMapper.deleteById(po.get().getId());
     }

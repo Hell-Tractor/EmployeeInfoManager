@@ -32,6 +32,13 @@ public class EmploymentController {
         return new ReturnObject(ReturnNo.CREATED);
     }
 
+    @DeleteMapping("")
+    @Audit(AuditLevel.ADMIN)
+    public ReturnObject deleteEmployment(@LoginUserToken UserToken token, @RequestParam Long id) {
+        this.employmentService.deleteEmployment(token, id);
+        return new ReturnObject();
+    }
+
     @GetMapping("")
     public ReturnObject getEmploymentById(@RequestParam Long id) {
         EmploymentDto ret = this.employmentService.getEmployment(id);
