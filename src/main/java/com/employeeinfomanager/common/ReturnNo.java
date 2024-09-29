@@ -37,6 +37,8 @@ public enum ReturnNo {
     RISK_TAG_EXIST(400, 800, "名称为%s的风险标签已存在"),
     RISK_TAG_NOT_EXIST(404, 801, "名称为%s的风险标签不存在"),
     RISK_TAG_STILL_IN_USE(403, 802, "风险标签(id=%d)仍被使用"),
+    RISK_TAG_ALREADY_IN_EMPLOYMENT(400, 803, "风险标签'%s'已经被添加至雇佣(id=%d)"),
+    RISK_TAG_NOT_FOUND_IN_EMPLOYMENT(404, 804, "雇佣(id=%d)未被添加风险标签'%s'"),
     /*--------------------------------------------------------------*/
     /*---------------------ERROR in STAFF MODULE--------------------*/
     STAFF_EXIST(400, 900, "身份证号为%s的员工已存在"),

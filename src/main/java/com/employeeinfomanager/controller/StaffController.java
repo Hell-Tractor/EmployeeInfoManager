@@ -6,8 +6,9 @@ import com.employeeinfomanager.common.ReturnNo;
 import com.employeeinfomanager.common.ReturnObject;
 import com.employeeinfomanager.controller.vo.CreateStaffVo;
 import com.employeeinfomanager.controller.vo.UpdateStaffVo;
-import com.employeeinfomanager.dao.bo.Staff;
 import com.employeeinfomanager.service.StaffService;
+import com.employeeinfomanager.service.dto.StaffDto;
+import com.employeeinfomanager.service.dto.StaffViolationsDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,7 @@ public class StaffController {
     @GetMapping("")
     @Audit(AuditLevel.ADMIN)
     public ReturnObject getStaff(@RequestParam String personId) {
-        Staff staff = this.staffService.findByPersonId(personId);
+        StaffDto staff = this.staffService.findByPersonId(personId);
         return new ReturnObject(ReturnNo.OK, staff);
     }
 
@@ -74,5 +75,12 @@ public class StaffController {
             return new ReturnObject(ReturnNo.FIELD_INVALID, "其他字段过长");
         this.staffService.updateStaff(vo);
         return new ReturnObject();
+    }
+
+    @GetMapping("/violations")
+    @Audit(AuditLevel.ADMIN)
+    public ReturnObject getStaffViolationsByPersonId(@RequestParam String personId) {
+        StaffViolationsDto violationsDto = this.staffService.findAllViolationsByPersonId(personId);
+        return new ReturnObject(ReturnNo.OK, violationsDto);
     }
 }

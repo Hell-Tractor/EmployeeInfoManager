@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class StaffControllerTest {
     private static final String DELETE_STAFF = "/staff";
     private static final String UPDATE_STAFF = "/staff/update";
     private static final String GET_STAFF = "/staff";
+    private static final String RETRIEVE_VIOLATIONS = "/staff/violations";
     /*--------------------------------------------------*/
 
     @BeforeAll
@@ -148,6 +150,32 @@ public class StaffControllerTest {
     @Test
     public void getStaffTest1() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get(GET_STAFF)
+                        .header("authorization", rootToken)
+                        .queryParam("personId", "142700198501010001")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.STAFF_NOT_EXIST.getCode()));
+    }
+
+    @Test
+    public void getStaffViolationsTest0() throws Exception {
+        List<String> violations = new ArrayList<>();
+        violations.add("violation1");
+        violations.add("violation2");
+        Mockito.when(employmentDao.retrieveViolationsByStaffId(Mockito.anyLong())).thenReturn(violations);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_VIOLATIONS)
+                        .header("authorization", rootToken)
+                        .queryParam("personId", "142700198501010000")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errNo").value(ReturnNo.OK.getCode()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.violations.length()").value(2));
+    }
+
+    @Test
+    public void getStaffViolationsTest1() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_VIOLATIONS)
                         .header("authorization", rootToken)
                         .queryParam("personId", "142700198501010001")
                         .contentType(MediaType.APPLICATION_JSON))

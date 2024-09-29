@@ -5,6 +5,7 @@ import com.employeeinfomanager.common.*;
 import com.employeeinfomanager.dao.UserDao;
 import com.employeeinfomanager.dao.bo.User;
 import com.employeeinfomanager.service.dto.UserDto;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,13 @@ public class UserService {
         this.userDao = userDao;
     }
 
+    @Transactional
     public void createUser(String username, String password, Long departId) {
         User user = new User(username, password, AuditLevel.ADMIN, departId);
         this.userDao.insert(user);
     }
 
+    @Transactional
     public String getLoginSalt(String username) {
         User user = this.userDao.findByUsername(username);
         user.setSalt(Utils.getRandomSalt());
@@ -39,6 +42,7 @@ public class UserService {
         return user.getSalt();
     }
 
+    @Transactional
     public String login(String username, String password, String salt) {
         User user = this.userDao.findByUsername(username);
         if (!salt.equals(user.getSalt())) {
@@ -53,12 +57,14 @@ public class UserService {
         return jwtHelper.createToken(user.getId(), user.getUsername(), user.getLevel(), user.getDepartId(), TOKEN_EXPIRE_SECONDS);
     }
 
+    @Transactional
     public PageDto<UserDto> retrieveUsers(int page, int pageSize) {
         List<User> users = this.userDao.retrieveAll(page, pageSize);
         List<UserDto> result = users.stream().map(this::getDto).toList();
         return new PageDto<>(result, page, result.size());
     }
 
+    @Transactional
     public void deleteUser(Long userId) {
         User user = this.userDao.findById(userId);
         if (user.getLevel() == AuditLevel.ROOT) {
@@ -68,6 +74,7 @@ public class UserService {
         this.userDao.deleteById(userId);
     }
 
+    @Transactional
     public void updatePassword(Long userId, String oldPassword, String newPassword) {
         User user = this.userDao.findById(userId);
         if (!user.getPassword().equals(oldPassword)) {

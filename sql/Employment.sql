@@ -15,3 +15,4 @@ insert into employment (staff_id, depart_id, project, valid_since, valid_until, 
 insert into employment (staff_id, depart_id, project, valid_since, valid_until, work_permit, violation) VALUES (2, 1, 'test', '2020-09-01', '2021-09-01', 'test_permit', 'violation');
 insert into employment (staff_id, depart_id, project, valid_since, valid_until, work_permit, violation) VALUES (3, 1, 'test', '2025-09-01', '2026-09-01', 'test_permit', 'violation');
 insert into employment (staff_id, depart_id, project, valid_since, valid_until, work_permit, violation) VALUES (4, 2, 'test', '2024-09-01', '2025-09-01', 'test_permit', 'violation');
+insert into employment (staff_id, depart_id, project, valid_since, valid_until, work_permit, violation) VALUES (1, 1, 'test', '2023-09-01', '2024-08-01', 'test_permit', 'violation2');

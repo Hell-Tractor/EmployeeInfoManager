@@ -1,7 +1,9 @@
 package com.employeeinfomanager.dao;
 
+import com.employeeinfomanager.Mapper.EmploymentPoMapper;
 import com.employeeinfomanager.Mapper.RiskTagPoMapper;
 import com.employeeinfomanager.Mapper.EmploymentRiskTagPoMapper;
+import com.employeeinfomanager.Mapper.po.EmploymentRiskTagPo;
 import com.employeeinfomanager.Mapper.po.RiskTagPo;
 import com.employeeinfomanager.common.BusinessException;
 import com.employeeinfomanager.common.ReturnNo;
@@ -15,10 +17,12 @@ import java.util.Optional;
 public class RiskTagDao {
     private final RiskTagPoMapper riskTagPoMapper;
     private final EmploymentRiskTagPoMapper employmentRiskTagPoMapper;
+    private final EmploymentPoMapper employmentPoMapper;
 
-    public RiskTagDao(RiskTagPoMapper riskTagPoMapper, EmploymentRiskTagPoMapper employmentRiskTagPoMapper) {
+    public RiskTagDao(RiskTagPoMapper riskTagPoMapper, EmploymentRiskTagPoMapper employmentRiskTagPoMapper, EmploymentPoMapper employmentPoMapper) {
         this.riskTagPoMapper = riskTagPoMapper;
         this.employmentRiskTagPoMapper = employmentRiskTagPoMapper;
+        this.employmentPoMapper = employmentPoMapper;
     }
 
     private RiskTag getBo(RiskTagPo po) {
@@ -73,5 +77,25 @@ public class RiskTagDao {
         }
         this.findById(id);
         this.riskTagPoMapper.deleteById(id);
+    }
+
+    public void addRiskTagToEmployment(Long employmentId, Long riskTagId) {
+        if (!this.employmentPoMapper.existsById(employmentId))
+            throw new BusinessException(ReturnNo.RESOURCE_NOT_EXIST, String.format(ReturnNo.RESOURCE_NOT_EXIST.getMessage(), "雇佣", employmentId));
+        RiskTag riskTag = this.findById(riskTagId);
+
+        if (this.employmentRiskTagPoMapper.findByEmploymentIdAndRiskTagId(employmentId, riskTagId).isPresent())
+            throw new BusinessException(ReturnNo.RISK_TAG_ALREADY_IN_EMPLOYMENT, String.format(ReturnNo.RISK_TAG_ALREADY_IN_EMPLOYMENT.getMessage(), riskTag.getName(), employmentId));
+        EmploymentRiskTagPo po = new EmploymentRiskTagPo(null, employmentId, riskTagId);
+        this.employmentRiskTagPoMapper.save(po);
+    }
+
+    public void removeRiskTagFromEmployment(Long employmentId, Long riskTagId) {
+        RiskTag tag = this.findById(riskTagId);
+        Optional<EmploymentRiskTagPo> po = this.employmentRiskTagPoMapper.findByEmploymentIdAndRiskTagId(employmentId, riskTagId);
+        if (po.isEmpty())
+            throw new BusinessException(ReturnNo.RISK_TAG_NOT_FOUND_IN_EMPLOYMENT, String.format(ReturnNo.RISK_TAG_NOT_FOUND_IN_EMPLOYMENT.getMessage(), tag.getName(), employmentId));
+
+        this.employmentRiskTagPoMapper.deleteById(po.get().getId());
     }
 }
