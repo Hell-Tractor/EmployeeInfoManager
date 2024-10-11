@@ -43,7 +43,14 @@ public enum ReturnNo {
     /*---------------------ERROR in STAFF MODULE--------------------*/
     STAFF_EXIST(400, 900, "身份证号为%s的员工已存在"),
     STAFF_NOT_EXIST(404, 901, "身份证号为%s的员工不存在"),
-    STAFF_STILL_IN_USE(403, 902, "员工(id=%d)仍被使用");
+    STAFF_STILL_IN_USE(403, 902, "员工(id=%d)仍被使用"),
+    /*--------------------------------------------------------------*/
+    /*---------------------ERROR in IMAGE MODULE--------------------*/
+    IMAGE_EMPTY(400, 1000, "图片为空"),
+    INVALID_IMAGE_TYPE(400, 1001, "未知的图片种类'%s'"),
+    FAILED_READING_IMAGE(500, 1002, "图片读取失败"),
+    FAILED_WRITING_IMAGE(500, 1003, "图片保存失败"),
+    IMAGE_NOT_FOUND(404, 1004, "图片不存在");
     /*--------------------------------------------------------------*/
 
     private final int code;

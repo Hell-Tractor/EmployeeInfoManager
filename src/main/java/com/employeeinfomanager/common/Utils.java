@@ -74,10 +74,10 @@ public class Utils {
         return builder.toString();
     }
 
-    public static String getMD5(String s) {
+    public static String getMD5(byte[] bytes) {
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
-            byte[] hashBytes = md5.digest(s.getBytes());
+            byte[] hashBytes = md5.digest(bytes);
 
             StringBuilder builder = new StringBuilder();
             for (byte b : hashBytes)

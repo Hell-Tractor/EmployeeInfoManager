@@ -126,7 +126,7 @@ public class UserControllerTest {
                 .andReturn().getResponse().getContentAsString();
         salt = Utils.getJsonField(salt, "data", String.class);
 
-        password = Utils.getMD5(password + salt);
+        password = Utils.getMD5((password + salt).getBytes());
         String requestJson = String.format("{ \"username\": \"%s\", \"password\": \"%s\", \"salt\": \"%s\" }", username, password, salt);
         String response = this.mockMvc.perform(MockMvcRequestBuilders.post(LOGIN)
                         .contentType(MediaType.APPLICATION_JSON)

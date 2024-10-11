@@ -48,7 +48,7 @@ public class UserService {
         if (!salt.equals(user.getSalt())) {
             throw new BusinessException(ReturnNo.BAD_SALT);
         }
-        String md5Password = Utils.getMD5(user.getPassword() + user.getSalt());
+        String md5Password = Utils.getMD5((user.getPassword() + user.getSalt()).getBytes());
         if (!password.equals(md5Password)) {
             throw new BusinessException(ReturnNo.AUTH_INVALID_ACCOUNT);
         }
