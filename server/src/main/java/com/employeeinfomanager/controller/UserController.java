@@ -9,6 +9,7 @@ import com.employeeinfomanager.common.ReturnObject;
 import com.employeeinfomanager.controller.vo.LoginVo;
 import com.employeeinfomanager.controller.vo.UpdatePasswordVo;
 import com.employeeinfomanager.controller.vo.CreateUserVo;
+import com.employeeinfomanager.service.dto.LoginDto;
 import com.employeeinfomanager.service.dto.UserDto;
 import com.employeeinfomanager.service.UserService;
 import org.slf4j.Logger;
@@ -52,8 +53,8 @@ public class UserController {
 
     @PostMapping("/login")
     public ReturnObject login(@Valid @RequestBody LoginVo vo) {
-        String token = this.userService.login(vo.getUsername(), vo.getPassword(), vo.getSalt());
-        return new ReturnObject(ReturnNo.OK, ReturnNo.OK.getMessage(), token);
+        LoginDto ret = this.userService.login(vo.getUsername(), vo.getPassword(), vo.getSalt());
+        return new ReturnObject(ReturnNo.OK, ret);
     }
 
     @GetMapping("")

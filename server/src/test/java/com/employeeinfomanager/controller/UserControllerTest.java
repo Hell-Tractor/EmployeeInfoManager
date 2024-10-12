@@ -133,7 +133,7 @@ public class UserControllerTest {
                         .content(requestJson))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        return Utils.getJsonField(response, "data", String.class);
+        return Utils.getJsonField(response, "data.token", String.class);
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.employeeinfomanager.aop.AuditLevel;
 import com.employeeinfomanager.common.*;
 import com.employeeinfomanager.dao.UserDao;
 import com.employeeinfomanager.dao.bo.User;
+import com.employeeinfomanager.service.dto.LoginDto;
 import com.employeeinfomanager.service.dto.UserDto;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class UserService {
     }
 
     @Transactional
-    public String login(String username, String password, String salt) {
+    public LoginDto login(String username, String password, String salt) {
         User user = this.userDao.findByUsername(username);
         if (!salt.equals(user.getSalt())) {
             throw new BusinessException(ReturnNo.BAD_SALT);
@@ -54,7 +55,8 @@ public class UserService {
         }
 
         JwtHelper jwtHelper = new JwtHelper();
-        return jwtHelper.createToken(user.getId(), user.getUsername(), user.getLevel(), user.getDepartId(), TOKEN_EXPIRE_SECONDS);
+        String token = jwtHelper.createToken(user.getId(), user.getUsername(), user.getLevel(), user.getDepartId(), TOKEN_EXPIRE_SECONDS);
+        return new LoginDto(token, user.getLevel());
     }
 
     @Transactional

@@ -54,7 +54,11 @@ public class Utils {
         JsonNode node;
         try {
             node = mapper.readTree(body);
-            node = node.get(field);
+            for (String nextField : field.split("\\.")) {
+                node = node.get(nextField);
+                if (node == null)
+                    return null;
+            }
             return mapper.treeToValue(node, clazz);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
