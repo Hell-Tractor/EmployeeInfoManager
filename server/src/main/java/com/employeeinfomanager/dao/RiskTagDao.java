@@ -36,7 +36,7 @@ public class RiskTagDao {
 
     public List<RiskTag> retrieveByEmploymentId(Long employmentId) {
         return this.employmentRiskTagPoMapper.findAllByEmploymentId(employmentId).stream()
-                .map(item -> this.findById(item.getId()))
+                .map(item -> this.findById(item.getRiskTagId()))
                 .toList();
     }
 

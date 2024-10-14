@@ -5,7 +5,7 @@ import request from '../utils/request';
 import { useAlertStore } from '../utils/store';
 import { SERVER } from '../config';
 
-interface Staff {
+export interface Staff {
   id: number;
   name: string;
   image: string;

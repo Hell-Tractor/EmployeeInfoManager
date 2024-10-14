@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 @JsonInclude
 public class EmploymentDto {
+    private Long id;
     private StaffDto staff;
     private DepartDto depart;
     private String project;

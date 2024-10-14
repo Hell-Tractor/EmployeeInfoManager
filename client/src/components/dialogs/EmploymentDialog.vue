@@ -1,12 +1,23 @@
 <script setup lang="ts">
-import { onMounted, Ref, ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { rules } from '../../utils/validators';
 import request from '../../utils/request';
-import { Employment } from '../EmploymentTable.vue';
 import { RiskTag } from '../RiskTagTable.vue';
 import { useAlertStore, useUserStore } from '../../utils/store';
 
-const emits = defineEmits<{ success: [Employment] }>();
+export interface EmploymentVo {
+  staffId: number;
+  departId: number;
+  project: string;
+  validSince: Date;
+  validUntil: Date;
+  workPermit: string;
+  riskTagIds: number[];
+  violation: string;
+}
+
+const emits = defineEmits<{ success: [EmploymentVo] }>();
+const props = defineProps<{ allRiskTags: RiskTag[] }>();
 
 const staffPersonId: Ref<string> = ref('');
 const project: Ref<string> = ref('');
@@ -33,7 +44,7 @@ function reset() {
 
 const saving: Ref<boolean> = ref(false);
 
-function replaceNullByEmptyString(employment: Employment) {
+function replaceNullByEmptyString(employment: EmploymentVo) {
     if (employment.violation === null) {
         employment.violation = '';
     }
@@ -53,8 +64,7 @@ async function save() {
     try {
         await uploadImage();
 
-        let employment: Employment = {
-            id: 0,
+        let employment: EmploymentVo = {
             staffId: staffId!,
             departId: useUserStore().departId,
             project: project.value,
@@ -65,7 +75,7 @@ async function save() {
             violation: violation.value
         };
         replaceNullByEmptyString(employment);
-        await request.post('employment/update', employment);
+        await request.put('employment', employment);
         useAlertStore().showMessage('success', '保存成功');
         emits('success', employment);
         reset();
@@ -80,7 +90,7 @@ async function save() {
 async function deleteImage() {
     if (!!workPermit.value) {
         try {
-            await request.delete(`image/staff/${workPermit.value}`);
+            await request.delete(`image/workPermit/${workPermit.value}`);
             workPermit.value = '';
         } catch (error) {
             console.error(error);
@@ -99,7 +109,7 @@ async function uploadImage() {
 
         let formData = new FormData();
         formData.append('file', imageFile.value);
-        let response = await request.post('image/staff', formData, {
+        let response = await request.put('image/upload/workPermit', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -126,15 +136,7 @@ async function selectImage() {
     imageFile.value = file;
 }
 
-const allRiskTags = ref<RiskTag[]>([]);
 
-onMounted(() => {
-    request.get('risk_tag', { params: { page: 1, pageSize: 100 }}).then((response) => {
-        allRiskTags.value = response.data.data.list;
-    }).catch((error) => {
-        console.error(error);
-    });
-})
 </script>
 
 <template>
@@ -158,7 +160,7 @@ onMounted(() => {
                         </v-row>
                         <v-img v-if="!!imageURL" :src="imageURL" max-height="200px"></v-img>
                         <v-btn v-else height="200px" width="100%" @click="selectImage()">上传工作许可照片</v-btn>
-                        <v-select v-model="riskTagIds" :items="allRiskTags" item-title="name" item-value="id" label="风险标签" multiple :rules="[rules.required]" chips></v-select>
+                        <v-select v-model="riskTagIds" :items="props.allRiskTags" item-title="name" item-value="id" label="风险标签" multiple :rules="[rules.required]" chips></v-select>
                         <v-text-field v-model="violation" label="违规记录"></v-text-field>
                     </v-card-text>
                     <v-card-actions>

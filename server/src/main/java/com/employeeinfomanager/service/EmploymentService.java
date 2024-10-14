@@ -42,7 +42,7 @@ public class EmploymentService {
     public static EmploymentDto getDto(Employment bo) {
         StaffDto staffDto = StaffService.getDto(bo.getStaff());
         DepartDto departDto = DepartService.getDto(bo.getDepart());
-        return EmploymentDto.builder().staff(staffDto).depart(departDto).project(bo.getProject())
+        return EmploymentDto.builder().id(bo.getId()).staff(staffDto).depart(departDto).project(bo.getProject())
                 .validSince(bo.getValidSince()).validUntil(bo.getValidUntil())
                 .riskTags(bo.getRiskTags()).workPermit(bo.getWorkPermit())
                 .violation(bo.getViolation()).build();

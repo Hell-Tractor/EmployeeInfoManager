@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { computed, Ref, ref } from 'vue';
+import { computed, ComputedRef, onMounted, Ref, ref } from 'vue';
 import request from '../utils/request';
 import { useAlertStore, useUserStore } from '../utils/store';
 import EmploymentDialog from './dialogs/EmploymentDialog.vue';
+import { Staff } from './StaffPage.vue';
+import { Depart } from './DepartTable.vue';
+import EmploymentFullTable from './EmploymentFullTable.vue';
+import { RiskTag } from './RiskTagTable.vue';
 
 interface SimpleEmployment {
   id: number;
@@ -13,15 +17,15 @@ interface SimpleEmployment {
   validUntil: Date;
 }
 
-export interface Employment {
+export interface EmploymentFull {
   id: number;
-  staffId: number;
-  departId: number;
+  staff: Staff;
+  depart: Depart;
   project: string;
   validSince: Date;
   validUntil: Date;
+  riskTags: RiskTag[];
   workPermit: string;
-  riskTagIds: number[];
   violation: string;
 }
 
@@ -53,7 +57,7 @@ function loadItems({ page, pageSize, sortBy }: { page: number, pageSize: number,
 
 function deleteItem(item: SimpleEmployment) {
   console.log(item);
-  request.delete(`employment`, { params: { 'userId': item.id } }).then(() => {
+  request.delete(`employment`, { params: { 'id': item.id } }).then(() => {
     items.value = [];
     loadItems({ page: 1, pageSize: pageSize.value, sortBy: '' });
     useAlertStore().showMessage('success', '删除成功');
@@ -66,6 +70,35 @@ function refresh() {
   items.value = [];
   loadItems({ page: 1, pageSize: pageSize.value, sortBy: '' });
 }
+
+const isLoadingFullInfo: Ref<boolean> = ref(false);
+const employmentFullInfo: Ref<EmploymentFull | undefined> = ref(undefined);
+async function getEmploymentFullInfo(id: number) {
+  // if (id == employmentFullInfo.value?.id) {
+  //   return;
+  // }
+  console.log(`getting employment full info for ${id}`);
+  isLoadingFullInfo.value = true;
+  try {
+    let response = await request.get(`employment`, { params: { id } });
+    employmentFullInfo.value = response.data.data;
+    console.log(employmentFullInfo.value);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    isLoadingFullInfo.value = false;
+  }
+}
+
+const allRiskTags = ref<RiskTag[]>([]);
+
+onMounted(() => {
+    request.get('risk_tag', { params: { page: 1, pageSize: 100 }}).then((response) => {
+        allRiskTags.value = response.data.data.list;
+    }).catch((error) => {
+        console.error(error);
+    });
+})
 </script>
 
 <template>
@@ -80,7 +113,7 @@ function refresh() {
     <template v-slot:top>
       <v-toolbar>
         <v-spacer></v-spacer>
-        <EmploymentDialog @success="refresh()" :init="null">
+        <EmploymentDialog @success="refresh()" :all-risk-tags="allRiskTags">
           <template v-slot:activator="{ props }">
             <v-btn color="primary" v-bind="props" width="80px" prepend-icon="mdi-plus">添加</v-btn>
           </template>"
@@ -88,6 +121,14 @@ function refresh() {
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
+      <v-dialog width="800px">
+        <template v-slot:activator="{ props }">
+          <v-icon size="small" style="margin-right: 10px;" v-bind="props" @click="getEmploymentFullInfo(item.id)">mdi-account-details</v-icon>
+        </template>
+        <template v-slot:default="{ isActive }">
+          <EmploymentFullTable :employment="employmentFullInfo" :isLoading="isLoadingFullInfo" :all-risk-tags="allRiskTags" v-model="isActive.value"/>
+        </template>
+      </v-dialog>
       <v-icon size="small" @click="deleteItem(item)">mdi-delete</v-icon>
     </template>
   </v-data-table-server>
