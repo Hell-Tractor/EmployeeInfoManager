@@ -7,7 +7,7 @@ import { RiskTag } from './RiskTagTable.vue';
 import request from '../utils/request';
 import { useAlertStore } from '../utils/store';
 
-const props = defineProps<{ employment?: EmploymentFull, isLoading: boolean, allRiskTags: RiskTag[] }>();
+const props = defineProps<{ employment?: EmploymentFull, isLoading: boolean, allRiskTags: RiskTag[], showActions: boolean }>();
 const isActive = defineModel<boolean>();
 
 const isValid: Ref<boolean> = ref(false);
@@ -153,7 +153,7 @@ async function updateItem() {
         </table>
       </v-form>
     </v-card-text>
-    <v-card-actions v-if="!isLoading">
+    <v-card-actions v-if="showActions && !isLoading">
       <v-spacer></v-spacer>
       <v-btn v-if="readonly" @click="editStart()" :loading="isSaving">编辑</v-btn>
       <v-btn v-else @click="updateItem()" :loading="isSaving">保存</v-btn>

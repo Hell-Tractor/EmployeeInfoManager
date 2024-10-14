@@ -126,7 +126,7 @@ onMounted(() => {
           <v-icon size="small" style="margin-right: 10px;" v-bind="props" @click="getEmploymentFullInfo(item.id)">mdi-account-details</v-icon>
         </template>
         <template v-slot:default="{ isActive }">
-          <EmploymentFullTable :employment="employmentFullInfo" :isLoading="isLoadingFullInfo" :all-risk-tags="allRiskTags" v-model="isActive.value"/>
+          <EmploymentFullTable :show-actions="true" :employment="employmentFullInfo" :isLoading="isLoadingFullInfo" :all-risk-tags="allRiskTags" v-model="isActive.value"/>
         </template>
       </v-dialog>
       <v-icon size="small" @click="deleteItem(item)">mdi-delete</v-icon>

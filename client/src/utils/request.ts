@@ -36,7 +36,8 @@ request.interceptors.response.use(
             localStorage.removeItem('token');
             localStorage.removeItem('username');
             localStorage.removeItem('level');
-            useUserStore().set('', '', '');
+            localStorage.removeItem('departId');
+            useUserStore().set('', '', '', -1);
             useAppStore().redirectTo('login');
             return Promise.reject(error);
         }
