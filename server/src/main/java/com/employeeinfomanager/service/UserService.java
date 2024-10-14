@@ -56,7 +56,7 @@ public class UserService {
 
         JwtHelper jwtHelper = new JwtHelper();
         String token = jwtHelper.createToken(user.getId(), user.getUsername(), user.getLevel(), user.getDepartId(), TOKEN_EXPIRE_SECONDS);
-        return new LoginDto(token, user.getLevel());
+        return new LoginDto(token, user.getLevel(), user.getDepartId());
     }
 
     @Transactional

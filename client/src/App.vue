@@ -8,6 +8,7 @@ import RiskTagTable from "./components/RiskTagTable.vue";
 import StaffPage from "./components/StaffPage.vue";
 import UserPage from "./components/UserPage.vue";
 import ViolationQueryPage from "./components/ViolationQueryPage.vue";
+import EmploymentTable from "./components/EmploymentTable.vue";
 
 interface Page {
   name: string;
@@ -36,8 +37,9 @@ onMounted(() => {
   let token = localStorage.getItem('token');
   let username = localStorage.getItem('username');
   let level = localStorage.getItem('level');
-  if (token && username && level) {
-    useUserStore().set(token, username, level);
+  let departId = localStorage.getItem('departId');
+  if (token && username && level && departId) {
+    useUserStore().set(token, username, level, Number.parseInt(departId));
   }
 })
 </script>
@@ -61,6 +63,7 @@ onMounted(() => {
     <v-main class="d-fex align-center justify-center" style="min-height: 300px;">
       <v-alert class="align-center h-center" style="max-width: 40%;" v-if="alertStore.show" :text="alertStore.message" :color="alertStore.type" :icon="`$${alertStore.type}`"></v-alert>
       <DefaultPage v-if="page?.name === 'home'" />
+      <EmploymentTable v-else-if="page?.name === 'employment'" />
       <DepartTable v-else-if="page?.name === 'depart'" />
       <ViolationQueryPage v-else-if="page?.name === 'violationQuery'" />
       <StaffPage v-else-if="page?.name === 'staff'" />

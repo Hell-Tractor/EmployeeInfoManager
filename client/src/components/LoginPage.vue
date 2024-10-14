@@ -23,9 +23,10 @@ async function login() {
         localStorage.setItem('token', result.data.data.token);
         localStorage.setItem('username', username.value);
         localStorage.setItem('level', result.data.data.level);
+        localStorage.setItem('departId', result.data.data.departId.toString());
 
         const userStore = useUserStore();
-        userStore.set(result.data.data.token, username.value, result.data.data.level);
+        userStore.set(result.data.data.token, username.value, result.data.data.level, result.data.data.departId);
 
         const alertStore = useAlertStore();
         alertStore.showMessage("success", `登录成功, 欢迎您: ${username.value}`, 1000);

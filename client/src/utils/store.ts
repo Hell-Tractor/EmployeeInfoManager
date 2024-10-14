@@ -25,13 +25,15 @@ export const useUserStore = defineStore('user', {
     state: () => ({
         token: '',
         username: '',
-        level: ''
+        level: '',
+        departId: -1,
     }),
     actions: {
-        set(token: string, username: string, level: string) {
+        set(token: string, username: string, level: string, departId: number) {
             this.token = token;
             this.username = username;
             this.level = level;
+            this.departId = departId;
         }
     }
 })

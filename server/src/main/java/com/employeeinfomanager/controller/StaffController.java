@@ -20,7 +20,7 @@ public class StaffController {
     private Logger logger = LoggerFactory.getLogger(StaffController.class);
 
     private static final String NAME_REGEX = "\\S{2,6}";
-    private static final String PERSON_ID_REGEX = "\\d{18}";
+    private static final String PERSON_ID_REGEX = "\\d{17}(\\d|X)";
 
     private final StaffService staffService;
 

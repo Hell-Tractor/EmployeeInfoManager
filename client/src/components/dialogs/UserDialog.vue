@@ -21,15 +21,11 @@ function reset() {
 const allDeparts = ref<Depart[]>([]);
 
 onMounted(() => {
-    try {
-        request.get('depart', { params: { page: 1, pageSize: 100 } }).then((response) => {
-            allDeparts.value = response.data.data.list;
-        }).catch((error) => {
-            console.error(error);
-        });
-    } catch (error) {
+    request.get('depart', { params: { page: 1, pageSize: 100 } }).then((response) => {
+        allDeparts.value = response.data.data.list;
+    }).catch((error) => {
         console.error(error);
-    }
+    });
 })
 </script>
 

@@ -5,5 +5,5 @@ export const rules = {
 
     depart: (value: any) => /^\S{2,16}$/.test(value) || '公司名称格式错误',
     riskTag: (value: any) => /^\S{1,8}$/.test(value) || '标签名称格式错误',
-    personId: (value: any) => /^\d{18}$/.test(value) || '身份证号格式错误',
+    personId: (value: any) => /^\d{17}(\d|X)$/.test(value) || '身份证号格式错误',
 }

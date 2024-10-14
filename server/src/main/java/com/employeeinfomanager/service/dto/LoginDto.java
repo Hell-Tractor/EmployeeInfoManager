@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 public class LoginDto {
     private String token;
     private AuditLevel level;
+    private Long departId;
 }

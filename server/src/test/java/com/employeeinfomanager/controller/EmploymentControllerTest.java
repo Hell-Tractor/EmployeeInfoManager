@@ -146,7 +146,7 @@ public class EmploymentControllerTest {
     @Test
     public void updateEmploymentTest0() throws Exception {
         String requestJson = "{ \"id\": 1, \"staffId\": 1, \"departId\": 1, \"project\": \"modified project\", \"validSince\": \"2023-01-01\", \"validUntil\": \"2024-01-01\", \"workPermit\": \"\", \"violation\": \"test violation\" }";
-        this.mockMvc.perform(MockMvcRequestBuilders.get(UPDATE_EMPLOYMENT)
+        this.mockMvc.perform(MockMvcRequestBuilders.post(UPDATE_EMPLOYMENT)
                         .header("authorization", rootToken)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))

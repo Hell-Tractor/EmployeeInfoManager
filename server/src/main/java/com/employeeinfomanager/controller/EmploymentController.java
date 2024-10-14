@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/employment", produces = "applications/json;charset=UTF-8")
+@RequestMapping(value = "/employment", produces = "application/json;charset=UTF-8")
 public class EmploymentController {
     private final EmploymentService employmentService;
 
@@ -45,7 +45,7 @@ public class EmploymentController {
         return new ReturnObject(ReturnNo.OK, ret);
     }
 
-    @GetMapping("/update")
+    @PostMapping("/update")
     @Audit(AuditLevel.ADMIN)
     public ReturnObject updateEmployment(@LoginUserToken UserToken token, @RequestBody UpdateEmploymentVo vo) {
         this.employmentService.updateEmployment(token, vo);
