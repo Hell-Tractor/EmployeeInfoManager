@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ComputedRef, onMounted, Ref, ref } from 'vue';
+import { computed, onMounted, Ref, ref } from 'vue';
 import request from '../utils/request';
 import { useAlertStore, useUserStore } from '../utils/store';
 import EmploymentDialog from './dialogs/EmploymentDialog.vue';
@@ -7,6 +7,9 @@ import { Staff } from './StaffPage.vue';
 import { Depart } from './DepartTable.vue';
 import EmploymentFullTable from './EmploymentFullTable.vue';
 import { RiskTag } from './RiskTagTable.vue';
+import jsPDF from 'jspdf';
+import { CLIENT, QRCODE_SIZE } from '../config';
+import QRCode from 'qrcode';
 
 interface SimpleEmployment {
   id: number;
@@ -41,6 +44,7 @@ const items: Ref<SimpleEmployment[]> = ref([]);
 const totalItems: Ref<number> = ref(0);
 const loading: Ref<boolean> = ref(false);
 const departId = computed(() => useUserStore().departId);
+const selected: Ref<number[]> = ref([]);
 
 function loadItems({ page, pageSize, sortBy }: { page: number, pageSize: number, sortBy: string }) {
   sortBy;
@@ -90,6 +94,30 @@ async function getEmploymentFullInfo(id: number) {
   }
 }
 
+const exporting: Ref<boolean> = ref(false);
+
+async function exportQRCode() {
+  exporting.value = true;
+  const pdf = new jsPDF({ unit: "px", format: [QRCODE_SIZE, QRCODE_SIZE] });
+  const canvasPromise = selected.value.map(async (id) => {
+    const data = `${CLIENT}employment/${id}`;
+    const canvas = document.createElement('canvas');
+    await QRCode.toCanvas(canvas, data);
+    return canvas.toDataURL('image/png');
+  })
+
+  const images = await Promise.all(canvasPromise);
+  images.forEach((image, index) => {
+    if (index > 0) {
+      pdf.addPage([QRCODE_SIZE, QRCODE_SIZE]);
+    }
+    pdf.addImage(image, 'PNG', 0, 0, QRCODE_SIZE, QRCODE_SIZE);
+  });
+
+  pdf.save('qrcodes.pdf');
+  exporting.value = false;
+}
+
 const allRiskTags = ref<RiskTag[]>([]);
 
 onMounted(() => {
@@ -109,9 +137,12 @@ onMounted(() => {
     :items-length="totalItems"
     :loading="loading"
     @update:options="loadItems"
+    show-select
+    v-model="selected"
   >
     <template v-slot:top>
       <v-toolbar>
+        <v-btn color="primary" @click="exportQRCode()" :loading="exporting">导出二维码</v-btn>
         <v-spacer></v-spacer>
         <EmploymentDialog @success="refresh()" :all-risk-tags="allRiskTags">
           <template v-slot:activator="{ props }">
