@@ -18,7 +18,7 @@ public enum ReturnNo {
 
     AUTH_NO_RIGHT(403, 430, "权限不足"),
 
-    RESOURCE_NOT_EXIST(404, 404, "%s(id=%d)不存在"),
+    RESOURCE_NOT_EXIST(404, 440, "%s(id=%d)不存在"),
 
     INTERNAL_SERVER_ERROR(500, 500, "内部服务器错误"),
 

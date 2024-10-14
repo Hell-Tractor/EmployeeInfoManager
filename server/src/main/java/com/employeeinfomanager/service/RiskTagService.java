@@ -1,6 +1,7 @@
 package com.employeeinfomanager.service;
 
 import com.employeeinfomanager.common.BusinessException;
+import com.employeeinfomanager.common.PageDto;
 import com.employeeinfomanager.common.ReturnNo;
 import com.employeeinfomanager.dao.EmploymentDao;
 import com.employeeinfomanager.dao.RiskTagDao;
@@ -49,7 +50,9 @@ public class RiskTagService {
     }
 
     @Transactional
-    public List<RiskTagDto> retrieveRiskTags() {
-        return this.riskTagDao.retrieveAll().stream().map(this::getDto).toList();
+    public PageDto<RiskTagDto> retrieveRiskTags(int page, int pageSize) {
+        List<RiskTagDto> ret = this.riskTagDao.retrieveAll(page, pageSize).stream().map(this::getDto).toList();
+        Long count = this.riskTagDao.getRiskTagCount();
+        return new PageDto<>(ret, page, ret.size(), count);
     }
 }

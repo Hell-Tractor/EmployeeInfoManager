@@ -68,4 +68,8 @@ public class DepartDao {
     public List<Depart> retrieveAll(int page, int pageSize) {
         return this.mapper.findAll(PageRequest.of(page - 1, pageSize)).stream().map(this::getBo).toList();
     }
+
+    public Long getDepartCount() {
+        return this.mapper.count();
+    }
 }

@@ -8,6 +8,7 @@ import com.employeeinfomanager.Mapper.po.RiskTagPo;
 import com.employeeinfomanager.common.BusinessException;
 import com.employeeinfomanager.common.ReturnNo;
 import com.employeeinfomanager.dao.bo.RiskTag;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,8 +40,12 @@ public class RiskTagDao {
                 .toList();
     }
 
-    public List<RiskTag> retrieveAll() {
-        return this.riskTagPoMapper.findAll().stream().map(this::getBo).toList();
+    public List<RiskTag> retrieveAll(int page, int pageSize) {
+        return this.riskTagPoMapper.findAll(PageRequest.of(page - 1, pageSize)).stream().map(this::getBo).toList();
+    }
+
+    public Long getRiskTagCount() {
+        return this.riskTagPoMapper.count();
     }
 
     public RiskTag findById(Long id) {

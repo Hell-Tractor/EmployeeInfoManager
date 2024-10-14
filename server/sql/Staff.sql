@@ -3,7 +3,7 @@ drop table staff;
 create table staff (
     id INT primary key AUTO_INCREMENT,
     name CHAR(6),
-    image CHAR(16),
+    image CHAR(32),
     born_year INT,
     person_id CHAR(18),
     experience varchar(128),

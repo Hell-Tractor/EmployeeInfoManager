@@ -47,24 +47,37 @@ public class ImageController {
         try {
             file.transferTo(output_file);
         } catch (IOException e) {
-            return new ReturnObject(ReturnNo.FAILED_WRITING_IMAGE);
+            return new ReturnObject(ReturnNo.FAILED_WRITING_IMAGE, e.getMessage());
         }
         return new ReturnObject(ReturnNo.CREATED, ReturnNo.CREATED.getMessage(), filename);
     }
 
+    @DeleteMapping("/{type}/{filename}")
+    @Audit(AuditLevel.ADMIN)
+    public ReturnObject deleteImage(@PathVariable String type, @PathVariable String filename) {
+        String basePath = getBasePathByImageType(type);
+        Path filePath = Paths.get(basePath).resolve(filename).normalize();
+        File file = filePath.toFile();
+        if (file.exists() && file.delete()) {
+            return new ReturnObject(ReturnNo.OK);
+        } else {
+            return new ReturnObject(ReturnNo.IMAGE_NOT_FOUND);
+        }
+    }
+
     @GetMapping("/{type}/{filename}")
-    public ReturnObject downloadImage(@PathVariable String type, @PathVariable String filename) {
+    public Object downloadImage(@PathVariable String type, @PathVariable String filename) {
         String basePath = getBasePathByImageType(type);
         Path filePath = Paths.get(basePath).resolve(filename).normalize();
         try {
             UrlResource resource = new UrlResource(filePath.toUri());
             if (resource.exists() || resource.isReadable()) {
-                return new ReturnObject(ReturnNo.OK, resource);
+                return resource;
             } else {
                 return new ReturnObject(ReturnNo.IMAGE_NOT_FOUND);
             }
         } catch (MalformedURLException e) {
-            return new ReturnObject(ReturnNo.FAILED_READING_IMAGE);
+            return new ReturnObject(ReturnNo.IMAGE_NOT_FOUND, e.getMessage());
         }
     }
 

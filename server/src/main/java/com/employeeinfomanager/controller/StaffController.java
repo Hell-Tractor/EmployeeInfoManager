@@ -60,7 +60,7 @@ public class StaffController {
         return new ReturnObject(ReturnNo.OK, staff);
     }
 
-    @GetMapping("/update")
+    @PostMapping("/update")
     @Audit(AuditLevel.ADMIN)
     public ReturnObject updateStaff(@RequestBody UpdateStaffVo vo) {    // ? 是否需要记录创建人和修改人？
         if (!vo.getName().matches(NAME_REGEX))

@@ -63,7 +63,7 @@ public class UserService {
     public PageDto<UserDto> retrieveUsers(int page, int pageSize) {
         List<User> users = this.userDao.retrieveAll(page, pageSize);
         List<UserDto> result = users.stream().map(this::getDto).toList();
-        return new PageDto<>(result, page, result.size());
+        return new PageDto<>(result, page, result.size(), this.userDao.getUserCount());
     }
 
     @Transactional

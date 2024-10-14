@@ -9,7 +9,7 @@ create table user (
     depart_id INT
 );
 
-insert into user(username, password, level, depart_id) VALUES ('root', '123456', 2, -1);
+insert into user(username, password, level, depart_id) VALUES ('root', '123456', 2, 1);
 insert into user(username, password, level, depart_id) VALUES ('test0', '123456', 1, 1);
 insert into user(username, password, level, depart_id) VALUES ('test1', '123456', 1, 1);
 insert into user(username, password, level, depart_id) VALUES ('test2', '123456', 1, 2);

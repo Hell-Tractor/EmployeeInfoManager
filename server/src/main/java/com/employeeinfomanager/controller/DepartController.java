@@ -40,7 +40,7 @@ public class DepartController {
         return new ReturnObject();
     }
 
-    @GetMapping("/update")
+    @PostMapping("/update")
     @Audit(AuditLevel.ROOT)
     public ReturnObject updateDepart(@RequestBody UpdateDepartVo vo) {
         if (!vo.getName().matches(DEPART_NAME_REGEX))

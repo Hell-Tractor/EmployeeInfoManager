@@ -29,12 +29,14 @@ public class StaffService {
 
     private Staff getBo(CreateStaffVo vo) {
         return Staff.builder().id(null).name(vo.getName()).image(vo.getImage()).personId(vo.getPersonId())
-                .bornYear(vo.getBornYear()).build();
+                .bornYear(LocalDate.now().getYear() - vo.getAge()).experience(vo.getExperience())
+                .physicalCondition(vo.getPhysicalCondition()).appendix(vo.getAppendix()).build();
     }
 
     private Staff getBo(UpdateStaffVo vo) {
         return Staff.builder().id(vo.getId()).name(vo.getName()).image(vo.getImage()).personId(vo.getPersonId())
-                .bornYear(vo.getBornYear()).build();
+                .bornYear(LocalDate.now().getYear() - vo.getAge()).experience(vo.getExperience())
+                .physicalCondition(vo.getPhysicalCondition()).appendix(vo.getAppendix()).build();
     }
 
     public static StaffDto getDto(Staff bo) {

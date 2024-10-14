@@ -68,6 +68,10 @@ public class EmploymentDao {
                 .map(this::getBo).toList();
     }
 
+    public Long getEmploymentCountByDepartId(Long departId) {
+        return this.employmentPoMapper.countByDepartId(departId);
+    }
+
     public Employment findById(Long id) {
         Optional<EmploymentPo> po = this.employmentPoMapper.findById(id);
         if (po.isEmpty())

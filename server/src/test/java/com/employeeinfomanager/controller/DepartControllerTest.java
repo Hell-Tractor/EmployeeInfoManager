@@ -126,7 +126,7 @@ public class DepartControllerTest {
     @Test
     public void updateDepartTest0() throws Exception {
         String requestJson = "{ \"id\": 1, \"name\": \"测试公司\" }";
-        this.mockMvc.perform(MockMvcRequestBuilders.get(UPDATE_DEPART)
+        this.mockMvc.perform(MockMvcRequestBuilders.post(UPDATE_DEPART)
                         .header("authorization", rootToken)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))

@@ -4,6 +4,7 @@ import com.employeeinfomanager.common.BusinessException;
 import com.employeeinfomanager.common.PageDto;
 import com.employeeinfomanager.common.ReturnNo;
 import com.employeeinfomanager.dao.DepartDao;
+import com.employeeinfomanager.dao.EmploymentDao;
 import com.employeeinfomanager.dao.UserDao;
 import com.employeeinfomanager.dao.bo.Depart;
 import com.employeeinfomanager.service.dto.DepartDto;
@@ -18,11 +19,13 @@ public class DepartService {
 
     private final DepartDao departDao;
     private final UserDao userDao;
+    private final EmploymentDao employmentDao;
 
     @Autowired
-    public DepartService(DepartDao departDao, UserDao userDao) {
+    public DepartService(DepartDao departDao, UserDao userDao, EmploymentDao employmentDao) {
         this.departDao = departDao;
         this.userDao = userDao;
+        this.employmentDao = employmentDao;
     }
 
     @Transactional
@@ -36,7 +39,9 @@ public class DepartService {
         if (!this.userDao.retrieveByDepartId(id).isEmpty()) {
             throw new BusinessException(ReturnNo.DEPART_STILL_IN_USE, String.format(ReturnNo.DEPART_STILL_IN_USE.getMessage(), id));
         }
-        // todo: check if depart is used in any staff
+        if (!this.employmentDao.retrieveEmploymentsByDepartId(id, 1, 1).isEmpty()) {
+            throw new BusinessException(ReturnNo.DEPART_STILL_IN_USE, String.format(ReturnNo.DEPART_STILL_IN_USE.getMessage(), id));
+        }
         this.departDao.deleteById(id);
     }
 
@@ -50,7 +55,7 @@ public class DepartService {
     @Transactional
     public PageDto<DepartDto> retrieveDeparts(int page, int pageSize) {
         List<DepartDto> departs = this.departDao.retrieveAll(page, pageSize).stream().map(DepartService::getDto).toList();
-        return new PageDto<>(departs, page, departs.size());
+        return new PageDto<>(departs, page, departs.size(), this.departDao.getDepartCount());
     }
 
     public static DepartDto getDto(Depart bo) {

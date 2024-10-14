@@ -81,7 +81,8 @@ public class EmploymentService {
     public PageDto<SimpleEmploymentDto> retrieveEmploymentsByDepartId(UserToken token, Long departId, int page, int pageSize) {
         this.checkPermissions(token, departId);
         List<SimpleEmploymentDto> ret = this.employmentDao.retrieveEmploymentsByDepartId(departId, page, pageSize).stream().map(EmploymentService::getSimpleDto).toList();
-        return new PageDto<>(ret, page, ret.size());
+        Long count = this.employmentDao.getEmploymentCountByDepartId(departId);
+        return new PageDto<>(ret, page, ret.size(), count);
     }
 
     @Transactional

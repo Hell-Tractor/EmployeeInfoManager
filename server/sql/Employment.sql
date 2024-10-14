@@ -7,7 +7,7 @@ create table employment (
     project char(16),
     valid_since date,
     valid_until date,
-    work_permit char(16),
+    work_permit char(32),
     violation varchar(128)
 );
 

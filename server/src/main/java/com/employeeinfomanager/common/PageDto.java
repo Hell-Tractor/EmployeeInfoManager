@@ -13,4 +13,5 @@ public class PageDto<T> {
     private List<T> list;
     private int page;
     private int pageSize;
+    private Long total;
 }

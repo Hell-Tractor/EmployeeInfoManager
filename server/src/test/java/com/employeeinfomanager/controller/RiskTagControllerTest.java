@@ -124,7 +124,7 @@ public class RiskTagControllerTest {
     @Test
     public void updateRiskTagTest0() throws Exception {
         String requestJson = "{\"id\": 1, \"name\": \"测试\"}";
-        this.mockMvc.perform(MockMvcRequestBuilders.get(UPDATE_RISK_TAG)
+        this.mockMvc.perform(MockMvcRequestBuilders.post(UPDATE_RISK_TAG)
                         .header("authorization", rootToken)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))

@@ -48,6 +48,10 @@ public class UserDao {
         return this.mapper.findAll(PageRequest.of(page - 1, pageSize)).stream().map(this::getBo).toList();
     }
 
+    public Long getUserCount() {
+        return this.mapper.count();
+    }
+
     public List<User> retrieveByDepartId(Long id) {
         return this.mapper.findAllByDepartId(id).stream().map(this::getBo).toList();
     }

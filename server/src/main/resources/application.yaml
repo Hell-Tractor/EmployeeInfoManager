@@ -19,5 +19,5 @@ EmployeeInfoManager:
     expire:
       seconds: 3600
   image-path:
-    staff: ./static/image/staff/
-    work-permit: ./static/image/work-permit/
+    staff: E:/Projects/EmployeeInfoManager/server/static/image/staff/
+    work-permit: E:/Projects/EmployeeInfoManager/server/static/image/work-permit/

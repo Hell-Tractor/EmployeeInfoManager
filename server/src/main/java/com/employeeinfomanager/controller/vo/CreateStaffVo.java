@@ -8,8 +8,8 @@ import javax.validation.constraints.Size;
 public class CreateStaffVo {
     private String name;
     private String image;
-    @Size(min = 1900, max = 2100)
-    private int bornYear;
+    @Size(min = 18, max = 100)
+    private int age;
     private String personId;
     private String experience;
     private String physicalCondition;

@@ -124,7 +124,7 @@ public class StaffControllerTest {
     @Test
     public void updateStaffTest0() throws Exception {
         String requestJson = "{ \"id\": 1, \"name\": \"测试\", \"image\": \"test_image\", \"bornYear\": 1980, \"personId\": 142700198001010000, \"experience\": \"\", \"physicalCondition\": \"\", \"appendix\": \"\" }";
-        this.mockMvc.perform(MockMvcRequestBuilders.get(UPDATE_STAFF)
+        this.mockMvc.perform(MockMvcRequestBuilders.post(UPDATE_STAFF)
                         .header("authorization", rootToken)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
