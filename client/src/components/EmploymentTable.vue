@@ -10,6 +10,7 @@ import { RiskTag } from './RiskTagTable.vue';
 import jsPDF from 'jspdf';
 import { CLIENT, QRCODE_SIZE } from '../config';
 import QRCode from 'qrcode';
+import pinyin from 'pinyin';
 
 interface SimpleEmployment {
   id: number;
@@ -103,7 +104,7 @@ async function exportQRCode() {
     const data = `${CLIENT}employment/${id}`;
     const canvas = document.createElement('canvas');
     await QRCode.toCanvas(canvas, data);
-    return canvas.toDataURL('image/png');
+    return [canvas.toDataURL('image/png'), items.value.find(item => item.id === id)!.staffName];
   })
 
   const images = await Promise.all(canvasPromise);
@@ -111,7 +112,11 @@ async function exportQRCode() {
     if (index > 0) {
       pdf.addPage([QRCODE_SIZE, QRCODE_SIZE]);
     }
-    pdf.addImage(image, 'PNG', 0, 0, QRCODE_SIZE, QRCODE_SIZE);
+    pdf.addImage(image[0], 'PNG', 0, 0, QRCODE_SIZE, QRCODE_SIZE);
+    // write staff name at the bottom
+    pdf.setFontSize(12);
+    const pinyinName = pinyin(image[1], { style: pinyin.STYLE_NORMAL }).flat().join(' ');
+    pdf.text(pinyinName, QRCODE_SIZE / 2, QRCODE_SIZE - 10, { align: 'center' });
   });
 
   pdf.save('qrcodes.pdf');
