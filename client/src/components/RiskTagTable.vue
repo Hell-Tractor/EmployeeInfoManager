@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
+import { computed, Ref, ref } from 'vue';
 import request from '../utils/request';
-import { useAlertStore } from '../utils/store';
+import { useAlertStore, useUserStore } from '../utils/store';
 import RiskTagDialog from './dialogs/RiskTagDialog.vue';
 
 export interface RiskTag {
@@ -9,12 +9,23 @@ export interface RiskTag {
   name: string;
 }
 
+interface Header { title: string, key: string | undefined, align: 'center' | 'start' | 'end' | undefined, sortable: boolean, value: string | undefined };
+
 const pageSize: Ref<number> = ref(10);
-const headers: { title: string, key: string | undefined, align: 'center' | 'start' | 'end' | undefined, sortable: boolean, value: string | undefined }[] = [
+const basicHeaders: Header[] = [
   { title: 'ID', key: 'id', value: undefined, align: "center", sortable: false },
   { title: '名称', key: undefined, value: 'name', align: "center", sortable: false },
+]
+const rootHeaders: Header[] = [
   { title: '操作', key: undefined, value: 'actions', align: "center", sortable: false },
 ]
+const headers = computed(() => {
+  if (useUserStore().level === 'ROOT') {
+    return [...basicHeaders, ...rootHeaders];
+  } else {
+    return basicHeaders;
+  }
+});
 const items: Ref<RiskTag[]> = ref([]);
 const totalItems: Ref<number> = ref(0);
 const loading: Ref<boolean> = ref(false);
@@ -85,7 +96,7 @@ function updateItem(item: RiskTag) {
         </RiskTagDialog>
       </v-toolbar>
     </template>
-    <template v-slot:item.actions="{ item }">
+    <template v-slot:item.actions="{ item }" v-if="useUserStore().level === 'ROOT'">
       <RiskTagDialog @success="updateItem" :init="{ id: item.id, name: item.name }">
         <template v-slot:activator="{ props }">
           <v-icon size="small" v-bind="props">mdi-pencil</v-icon>

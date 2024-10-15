@@ -149,7 +149,7 @@ async function selectImage() {
                 <v-card>
                     <v-card-text>
                         <v-text-field v-model="staffPersonId" label="员工身份证号" :rules="[rules.required, rules.personId]"></v-text-field>
-                        <v-text-field v-model="project" label="项目名称" :rules="[rules.required]"></v-text-field>
+                        <v-text-field v-model="project" label="项目名称" :rules="[rules.required, rules.projectName]"></v-text-field>
                         <v-row>
                             <v-col cols="6">
                                 <v-text-field v-model="validSince" label="有效期自" type="date" :rules="[rules.required]"></v-text-field>
@@ -160,8 +160,8 @@ async function selectImage() {
                         </v-row>
                         <v-img v-if="!!imageURL" :src="imageURL" max-height="200px"></v-img>
                         <v-btn v-else height="200px" width="100%" @click="selectImage()">上传工作许可照片</v-btn>
-                        <v-select v-model="riskTagIds" :items="props.allRiskTags" item-title="name" item-value="id" label="风险标签" multiple :rules="[rules.required]" chips></v-select>
-                        <v-text-field v-model="violation" label="违规记录"></v-text-field>
+                        <v-select v-model="riskTagIds" :items="props.allRiskTags" item-title="name" item-value="id" label="风险标签" multiple chips></v-select>
+                        <v-text-field v-model="violation" label="违规记录" :rules="[rules.maxLength128]"></v-text-field>
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>

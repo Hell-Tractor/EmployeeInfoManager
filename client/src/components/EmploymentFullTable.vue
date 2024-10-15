@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, Ref } from 'vue';
+import { computed, ComputedRef, ref, Ref } from 'vue';
 import { SERVER } from '../config';
 import { EmploymentFull } from './EmploymentTable.vue';
 import { rules } from '../utils/validators';
@@ -12,7 +12,9 @@ const isActive = defineModel<boolean>();
 
 const isValid: Ref<boolean> = ref(false);
 const staffImageURL = computed(() => `${SERVER}image/staff/${props.employment!.staff.image}`);
-const workPermitImageURL = computed(() => `${SERVER}image/workPermit/${props.employment!.workPermit}`);
+const newWorkPermitImageURL: Ref<string | null> = ref(null);
+const workPermitImageURL = computed(() => newWorkPermitImageURL.value ?? `${SERVER}image/workPermit/${props.employment!.workPermit}`);
+const workPermitImageFile = ref<File | null>(null);
 const staffInTable = computed(() => props.employment!.staff);
 
 const readonly: Ref<boolean> = ref(true);
@@ -36,8 +38,57 @@ interface UpdateEmploymentVo {
   violation: string;
 }
 
+async function deleteImage() {
+  if (!!props.employment!.workPermit) {
+    await request.delete(`image/workPermit/${props.employment!.workPermit}`);
+    props.employment!.workPermit = '';
+  } else {
+    console.log('no image to delete');
+  }
+}
+
+async function uploadImage() {
+  if (workPermitImageFile.value === null) {
+    return;
+  }
+  try {
+    await deleteImage();
+
+    let formData = new FormData();
+    formData.append('file', workPermitImageFile.value!);
+    let response = await request.put('image/upload/workPermit', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    props.employment!.workPermit = response.data.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function selectImage() {
+  let file = await new Promise<File>((resolve) => {
+    let input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = () => {
+      if (input.files !== null) {
+        resolve(input.files[0]);
+      }
+    };
+    input.click();
+  });
+  newWorkPermitImageURL.value = URL.createObjectURL(file);
+  workPermitImageFile.value = file;
+}
+
 async function updateItem() {
   isSaving.value = true;
+  try {
+    await uploadImage();
+  } catch (error) {
+    console.error(error);
+    await deleteImage();
+    isSaving.value = false;
+    return;
+  }
   try {
     for (let tag of props.employment!.riskTags) {
       let riskTagId = tag.id;
@@ -118,7 +169,7 @@ async function updateItem() {
             </tr>
             <tr>
               <td colspan="3">
-                <v-text-field label="项目名称" width="650px" density="compact" :rules="[rules.required]" v-model="props.employment!.project" :readonly="readonly" :hide-details="readonly ? true : 'auto'"></v-text-field>
+                <v-text-field label="项目名称" width="650px" density="compact" :rules="[rules.required, rules.projectName]" v-model="props.employment!.project" :readonly="readonly" :hide-details="readonly ? true : 'auto'"></v-text-field>
               </td>
             </tr>
             <tr>
@@ -135,18 +186,18 @@ async function updateItem() {
             </tr>
             <tr>
               <td colspan="3">
-                <v-select v-model="props.employment!.riskTags" item-title="name" return-object :items="allRiskTags" label="风险标签" multiple :rules="[rules.required]" chips :readonly="readonly" :hide-details="readonly ? true : 'auto'"></v-select>
+                <v-select v-model="props.employment!.riskTags" item-title="name" return-object :items="allRiskTags" label="风险标签" multiple chips :readonly="readonly" :hide-details="readonly ? true : 'auto'"></v-select>
               </td>
             </tr>
             <tr>
               <td colspan="3">
                 <v-list-item title="工作许可" style="color: gray;"></v-list-item>
-                <v-img :src="workPermitImageURL" width="650px" min-height="100"></v-img>
+                <v-img :src="workPermitImageURL" width="650px" min-height="100" @click="readonly ? true : selectImage()"></v-img>
               </td>
             </tr>
             <tr>
               <td colspan="3">
-                <v-textarea label="违规记录" width="650px" density="compact" v-model="props.employment!.violation"  :readonly="readonly" :hide-details="readonly ? true : 'auto'"></v-textarea>
+                <v-textarea label="违规记录" width="650px" density="compact" v-model="props.employment!.violation" :rules="[rules.maxLength128]" :readonly="readonly" :hide-details="readonly ? true : 'auto'"></v-textarea>
               </td>
             </tr>
           </tbody>

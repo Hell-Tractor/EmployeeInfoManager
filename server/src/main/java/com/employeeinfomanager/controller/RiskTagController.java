@@ -52,7 +52,7 @@ public class RiskTagController {
     }
 
     @GetMapping("")
-    @Audit(AuditLevel.ROOT)
+    @Audit(AuditLevel.ADMIN)
     public ReturnObject retrieveRiskTags(@RequestParam(required = false, defaultValue = "1") int page,
                                          @RequestParam(required = false, defaultValue = "10") int pageSize) {
         PageDto<RiskTagDto> ret = this.riskTagService.retrieveRiskTags(page, pageSize);

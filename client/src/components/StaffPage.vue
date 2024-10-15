@@ -194,10 +194,10 @@ onMounted(() => {
           <tbody>
             <tr>
               <td>
-                <v-text-field label="姓名" width="250px" :rules="[rules.required]" density="compact" :readonly="readonly" v-model="staffInTable.name" :hide-details="readonly ? true : 'auto'"></v-text-field>
+                <v-text-field label="姓名" width="250px" :rules="[rules.required, rules.name]" density="compact" :readonly="readonly" v-model="staffInTable.name" :hide-details="readonly ? true : 'auto'"></v-text-field>
               </td>
               <td>
-                <v-text-field label="年龄" width="250px" :rules="[rules.required]" density="compact" :readonly="readonly" v-model.number="staffInTable.age" :hide-details="readonly ? true : 'auto'"></v-text-field>
+                <v-text-field label="年龄" width="250px" :rules="[rules.required, rules.age]" density="compact" :readonly="readonly" v-model.number="staffInTable.age" :hide-details="readonly ? true : 'auto'"></v-text-field>
               </td>
               <td rowspan="2">
                 <v-img v-if="!!imageURL" :src="imageURL" width="150px" height="225px" @click="readonly ? true : selectImage()"></v-img>
@@ -211,17 +211,17 @@ onMounted(() => {
             </tr>
             <tr>
               <td colspan="3">
-                <v-textarea label="个人经历" width="650px" :readonly="readonly" v-model="staffInTable.experience" :hide-details="readonly ? true : 'auto'"></v-textarea>
+                <v-textarea label="个人经历" width="650px" :readonly="readonly" v-model="staffInTable.experience" :rules="[rules.maxLength128]" :hide-details="readonly ? true : 'auto'"></v-textarea>
               </td>
             </tr>
             <tr>
               <td colspan="3">
-                <v-textarea label="身体状况" width="650px" :readonly="readonly" v-model="staffInTable.physicalCondition" :hide-details="readonly ? true : 'auto'"></v-textarea>
+                <v-textarea label="身体状况" width="650px" :readonly="readonly" v-model="staffInTable.physicalCondition" :rules="[rules.maxLength128]" :hide-details="readonly ? true : 'auto'"></v-textarea>
               </td>
             </tr>
             <tr>
               <td colspan="3">
-                <v-textarea label="备注" width="650px" :readonly="readonly" v-model="staffInTable.appendix" :hide-details="readonly ? true : 'auto'"></v-textarea>
+                <v-textarea label="备注" width="650px" :readonly="readonly" v-model="staffInTable.appendix" :rules="[rules.maxLength128]" :hide-details="readonly ? true : 'auto'"></v-textarea>
               </td>
             </tr>
           </tbody>

@@ -14,19 +14,20 @@ interface Page {
   name: string;
   text: string;
   icon: string;
+  requireRoot: boolean;
 }
 
 const pages: Page[] = [
-  { name: 'home', text: '主页', icon: 'mdi-home' },
-  { name: 'employment', text: '雇佣记录', icon: 'mdi-account-tie' },
-  { name: 'violationQuery', text: '违规查询', icon: 'mdi-magnify' },
-  { name: 'staff', text: '员工管理', icon: 'mdi-account-group' },
-  { name: 'depart', text: '公司列表', icon: 'mdi-office-building' },
-  { name: 'tag', text: '风险标签', icon: 'mdi-tag' },
-  { name: 'user', text: '系统用户', icon: 'mdi-account' },
+  { name: 'home', text: '主页', icon: 'mdi-home', requireRoot: false },
+  { name: 'employment', text: '雇佣记录', icon: 'mdi-account-tie', requireRoot: false },
+  { name: 'violationQuery', text: '违规查询', icon: 'mdi-magnify', requireRoot: false },
+  { name: 'staff', text: '员工管理', icon: 'mdi-account-group', requireRoot: false },
+  { name: 'depart', text: '公司列表', icon: 'mdi-office-building', requireRoot: true },
+  { name: 'tag', text: '风险标签', icon: 'mdi-tag', requireRoot: false },
+  { name: 'user', text: '系统用户', icon: 'mdi-account', requireRoot: true },
 ]
 
-const LOGIN_PAGE: Page = { name: 'login', text: '登录', icon: 'mdi-login' };
+const LOGIN_PAGE: Page = { name: 'login', text: '登录', icon: 'mdi-login', requireRoot: false };
 
 const alertStore = useAlertStore();
 const appStore = useAppStore();
@@ -42,6 +43,21 @@ onMounted(() => {
     useUserStore().set(token, username, level, Number.parseInt(departId));
   }
 })
+
+function logout() {
+  useUserStore().set('', '', '', -1);
+  localStorage.removeItem('token');
+  localStorage.removeItem('username');
+  localStorage.removeItem('level');
+  localStorage.removeItem('departId');
+  window.location.reload();
+}
+
+function isAllowed(requireRoot: boolean) {
+  return !requireRoot || useUserStore().level === 'ROOT';
+}
+
+const allowedPages = computed(() => pages.filter(p => isAllowed(p.requireRoot)));
 </script>
 
 <template>
@@ -49,9 +65,10 @@ onMounted(() => {
     <v-navigation-drawer image="https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg" theme="dark">
       <v-list-item title="员工管理系统" @click="appStore.redirectTo('home')"></v-list-item>
       <v-divider></v-divider>
-      <v-list-item v-for="item in pages" :key = "item.name" @click="appStore.redirectTo(item.name)" :title="item.text" :prepend-icon="item.icon"></v-list-item>
+      <v-list-item v-for="item in allowedPages" :key = "item.name" @click="appStore.redirectTo(item.name)" :title="item.text" :prepend-icon="item.icon"></v-list-item>
       <v-divider></v-divider>
       <v-list-item :title="LOGIN_PAGE.text" @click="appStore.redirectTo('login')" :prepend-icon="LOGIN_PAGE.icon"></v-list-item>
+      <v-list-item title="退出登录" :prepend-icon="`mdi-logout`" @click="logout()" v-if="!!useUserStore().token"></v-list-item>
     </v-navigation-drawer>
 
     <v-app-bar :title="page?.text">
