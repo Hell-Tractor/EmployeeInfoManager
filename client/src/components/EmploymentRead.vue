@@ -23,5 +23,5 @@ onMounted(() => {
 </script>
 
 <template>
-    <EmploymentFullTable :employment="employment" :isLoading="isLoading" :show-actions="false"></EmploymentFullTable>
+    <EmploymentFullTable :employment="employment" :isLoading="isLoading" :show-actions="false" width="100%" max-width="800"></EmploymentFullTable>
 </template>

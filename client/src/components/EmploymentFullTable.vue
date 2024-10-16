@@ -7,7 +7,7 @@ import { RiskTag } from './RiskTagTable.vue';
 import request from '../utils/request';
 import { useAlertStore } from '../utils/store';
 
-const props = defineProps<{ employment?: EmploymentFull, isLoading: boolean, allRiskTags?: RiskTag[], showActions: boolean }>();
+const props = defineProps<{ employment?: EmploymentFull, isLoading: boolean, allRiskTags?: RiskTag[], showActions: boolean, maxWidth?: string, width?: string }>();
 const isActive = defineModel<boolean>();
 
 const isValid: Ref<boolean> = ref(false);
@@ -126,7 +126,7 @@ async function updateItem() {
 </script>
 
 <template>
-  <v-card>
+  <v-card :max-width="maxWidth" class="h-center">
     <v-card-text>
       <v-list-item v-if="isLoading" title="加载中..." width="175px" class="h-center">
         <template v-slot:append>
@@ -134,42 +134,42 @@ async function updateItem() {
         </template>
       </v-list-item>
       <v-form v-model="isValid" v-else>
-        <table class="h-center" border="1" cellspacing="0">
+        <table class="h-center" border="1" cellspacing="0" :width="width">
           <tbody>
             <tr>
               <td>
-                <v-text-field label="姓名" width="250px" density="compact" :readonly="true" v-model="staffInTable.name" :hide-details="true"></v-text-field>
+                <v-text-field label="姓名" density="compact" :readonly="true" v-model="staffInTable.name" :hide-details="true"></v-text-field>
               </td>
               <td>
-                <v-text-field label="年龄" width="250px" density="compact" :readonly="true" v-model.number="staffInTable.age" :hide-details="true"></v-text-field>
+                <v-text-field label="年龄" density="compact" :readonly="true" v-model.number="staffInTable.age" :hide-details="true"></v-text-field>
               </td>
               <td rowspan="2">
-                <v-img :src="staffImageURL" width="150px" height="225px"></v-img>
+                <v-img :src="staffImageURL" min-width="40"></v-img>
               </td>
             </tr>
             <tr>
               <td colspan="2">
-                <v-text-field label="身份证号" width="500px" density="compact" :readonly="true" v-model="staffInTable.personId" :hide-details="true"></v-text-field>
+                <v-text-field label="身份证号" density="compact" :readonly="true" v-model="staffInTable.personId" :hide-details="true"></v-text-field>
               </td>
             </tr>
             <tr>
               <td colspan="3">
-                <v-textarea label="个人经历" width="650px" :readonly="true" v-model="staffInTable.experience" :hide-details="true"></v-textarea>
+                <v-textarea label="个人经历" :readonly="true" v-model="staffInTable.experience" :hide-details="true"></v-textarea>
               </td>
             </tr>
             <tr>
               <td colspan="3">
-                <v-textarea label="身体状况" width="650px" :readonly="true" v-model="staffInTable.physicalCondition" :hide-details="true"></v-textarea>
+                <v-textarea label="身体状况" :readonly="true" v-model="staffInTable.physicalCondition" :hide-details="true"></v-textarea>
               </td>
             </tr>
             <tr>
               <td colspan="3">
-                <v-textarea label="备注" width="650px" :readonly="true" v-model="staffInTable.appendix" :hide-details="true"></v-textarea>
+                <v-textarea label="备注" :readonly="true" v-model="staffInTable.appendix" :hide-details="true"></v-textarea>
               </td>
             </tr>
             <tr>
               <td colspan="3">
-                <v-text-field label="项目名称" width="650px" density="compact" :rules="[rules.required, rules.projectName]" v-model="props.employment!.project" :readonly="readonly" :hide-details="readonly ? true : 'auto'"></v-text-field>
+                <v-text-field label="项目名称" density="compact" :rules="[rules.required, rules.projectName]" v-model="props.employment!.project" :readonly="readonly" :hide-details="readonly ? true : 'auto'"></v-text-field>
               </td>
             </tr>
             <tr>
@@ -192,12 +192,12 @@ async function updateItem() {
             <tr>
               <td colspan="3">
                 <v-list-item title="工作许可" style="color: gray;"></v-list-item>
-                <v-img :src="workPermitImageURL" width="650px" min-height="100" @click="readonly ? true : selectImage()"></v-img>
+                <v-img :src="workPermitImageURL" min-height="100" @click="readonly ? true : selectImage()"></v-img>
               </td>
             </tr>
             <tr>
               <td colspan="3">
-                <v-textarea label="违规记录" width="650px" density="compact" v-model="props.employment!.violation" :rules="[rules.maxLength128]" :readonly="readonly" :hide-details="readonly ? true : 'auto'"></v-textarea>
+                <v-textarea label="违规记录" density="compact" v-model="props.employment!.violation" :rules="[rules.maxLength128]" :readonly="readonly" :hide-details="readonly ? true : 'auto'"></v-textarea>
               </td>
             </tr>
           </tbody>

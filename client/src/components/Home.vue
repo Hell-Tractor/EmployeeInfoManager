@@ -19,11 +19,11 @@ interface Page {
 
 const pages: Page[] = [
   { name: 'home', text: '主页', icon: 'mdi-home', requireRoot: false },
-  { name: 'employment', text: '雇佣记录', icon: 'mdi-account-tie', requireRoot: false },
+  { name: 'staff', text: '人员管理', icon: 'mdi-account-group', requireRoot: false },
+  { name: 'employment', text: '生成二维码', icon: 'mdi-account-tie', requireRoot: false },
   { name: 'violationQuery', text: '违规查询', icon: 'mdi-magnify', requireRoot: false },
-  { name: 'staff', text: '员工管理', icon: 'mdi-account-group', requireRoot: false },
-  { name: 'depart', text: '公司列表', icon: 'mdi-office-building', requireRoot: true },
   { name: 'tag', text: '风险标签', icon: 'mdi-tag', requireRoot: false },
+  { name: 'depart', text: '公司列表', icon: 'mdi-office-building', requireRoot: true },
   { name: 'user', text: '系统用户', icon: 'mdi-account', requireRoot: true },
 ]
 
