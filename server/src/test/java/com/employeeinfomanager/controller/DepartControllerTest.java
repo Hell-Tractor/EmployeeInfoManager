@@ -4,6 +4,7 @@ import com.employeeinfomanager.aop.AuditLevel;
 import com.employeeinfomanager.common.JwtHelper;
 import com.employeeinfomanager.common.ReturnNo;
 import com.employeeinfomanager.dao.DepartDao;
+import com.employeeinfomanager.dao.EmploymentDao;
 import com.employeeinfomanager.dao.UserDao;
 import com.employeeinfomanager.dao.bo.Depart;
 import com.employeeinfomanager.dao.bo.User;
@@ -35,6 +36,8 @@ public class DepartControllerTest {
     private DepartDao departDao;
     @MockBean
     private UserDao userDao;
+    @MockBean
+    private EmploymentDao employmentDao;
 
     private static String rootToken;
 
@@ -87,6 +90,7 @@ public class DepartControllerTest {
     @Test
     public void deleteDepartTest0() throws Exception {
         Mockito.when(userDao.retrieveByDepartId(Mockito.anyLong())).thenReturn(new ArrayList<>());
+        Mockito.when(employmentDao.retrieveEmploymentsByDepartId(Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(new ArrayList<>());
 
         this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_DEPART)
                         .header("authorization", rootToken)

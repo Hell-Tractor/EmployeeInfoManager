@@ -1,15 +1,15 @@
 import { defineStore } from "pinia";
 
 export const useAlertStore = defineStore('alert', {
-    state: () => ({
+    state: (): { type: string, message: string, show: boolean, timer: NodeJS.Timeout | null } => ({
         type: 'success',
         message: '',
         show: false,
-        timer: 0
+        timer: null
     }),
     actions: {
         showMessage(type: string, message: string, duration: number = 3000) {
-            if (this.show)
+            if (this.timer)
                 clearTimeout(this.timer);
             this.type = type;
             this.message = message;

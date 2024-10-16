@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ComputedRef, ref, Ref } from 'vue';
+import { computed, ref, Ref } from 'vue';
 import { SERVER } from '../config';
 import { EmploymentFull } from './EmploymentTable.vue';
 import { rules } from '../utils/validators';
@@ -7,7 +7,7 @@ import { RiskTag } from './RiskTagTable.vue';
 import request from '../utils/request';
 import { useAlertStore } from '../utils/store';
 
-const props = defineProps<{ employment?: EmploymentFull, isLoading: boolean, allRiskTags: RiskTag[], showActions: boolean }>();
+const props = defineProps<{ employment?: EmploymentFull, isLoading: boolean, allRiskTags?: RiskTag[], showActions: boolean }>();
 const isActive = defineModel<boolean>();
 
 const isValid: Ref<boolean> = ref(false);
@@ -186,7 +186,7 @@ async function updateItem() {
             </tr>
             <tr>
               <td colspan="3">
-                <v-select v-model="props.employment!.riskTags" item-title="name" return-object :items="allRiskTags" label="风险标签" multiple chips :readonly="readonly" :hide-details="readonly ? true : 'auto'"></v-select>
+                <v-select v-model="props.employment!.riskTags" item-title="name" return-object :items="allRiskTags ?? props.employment!.riskTags" label="风险标签" multiple chips :readonly="readonly" :hide-details="readonly ? true : 'auto'"></v-select>
               </td>
             </tr>
             <tr>

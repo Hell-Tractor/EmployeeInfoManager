@@ -4,7 +4,7 @@ import { SERVER } from '../config';
 
 const request = axios.create({
     baseURL: SERVER,
-    timeout: 3000,
+    timeout: 10000,
 });
 
 export default request;

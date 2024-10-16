@@ -141,6 +141,6 @@ public class RiskTagControllerTest {
                         .header("authorization", rootToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.length()").value(6));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list.length()").value(6));
     }
 }
