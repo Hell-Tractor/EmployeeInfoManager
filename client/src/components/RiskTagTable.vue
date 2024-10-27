@@ -30,10 +30,10 @@ const items: Ref<RiskTag[]> = ref([]);
 const totalItems: Ref<number> = ref(0);
 const loading: Ref<boolean> = ref(false);
 
-function loadItems({ page, pageSize, sortBy }: { page: number, pageSize: number, sortBy: string }) {
+function loadItems({ page, itemsPerPage, sortBy }: { page: number, itemsPerPage: number, sortBy: string }) {
   sortBy;
   loading.value = true;
-  request.get('risk_tag', { params: { page, pageSize } }).then((response) => {
+  request.get('risk_tag', { params: { page, pageSize: itemsPerPage } }).then((response) => {
     items.value = response.data.data.list;
     totalItems.value = response.data.data.total;
   }).catch((error) => {
@@ -47,7 +47,7 @@ function deleteItem(item: RiskTag) {
   console.log(item);
   request.delete(`risk_tag`, { params: { 'id': item.id } }).then(() => {
     items.value = [];
-    loadItems({ page: 1, pageSize: pageSize.value, sortBy: '' });
+    loadItems({ page: 1, itemsPerPage: pageSize.value, sortBy: '' });
     useAlertStore().showMessage('success', '删除成功');
   }).catch((error) => {
     console.error(error);
@@ -58,7 +58,7 @@ function addItem(item: RiskTag) {
   console.log(item);
   request.put('risk_tag', { 'name': item.name }).then(() => {
     items.value = [];
-    loadItems({ page: 1, pageSize: pageSize.value, sortBy: '' });
+    loadItems({ page: 1, itemsPerPage: pageSize.value, sortBy: '' });
     useAlertStore().showMessage('success', '添加成功');
   }).catch((error) => {
     console.error(error);
@@ -69,7 +69,7 @@ function updateItem(item: RiskTag) {
   console.log(item);
   request.post(`risk_tag/update`, item).then(() => {
     items.value = [];
-    loadItems({ page: 1, pageSize: pageSize.value, sortBy: '' });
+    loadItems({ page: 1, itemsPerPage: pageSize.value, sortBy: '' });
     useAlertStore().showMessage('success', '更新成功');
   }).catch((error) => {
     console.error(error);

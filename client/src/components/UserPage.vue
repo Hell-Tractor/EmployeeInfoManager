@@ -23,10 +23,10 @@ const items: Ref<User[]> = ref([]);
 const totalItems: Ref<number> = ref(0);
 const loading: Ref<boolean> = ref(false);
 
-function loadItems({ page, pageSize, sortBy }: { page: number, pageSize: number, sortBy: string }) {
+function loadItems({ page, itemsPerPage, sortBy }: { page: number, itemsPerPage: number, sortBy: string }) {
   sortBy;
   loading.value = true;
-  request.get('user', { params: { page, pageSize } }).then((response) => {
+  request.get('user', { params: { page, pageSize: itemsPerPage } }).then((response) => {
     items.value = response.data.data.list;
     totalItems.value = response.data.data.total;
   }).catch((error) => {
@@ -40,7 +40,7 @@ function deleteItem(item: User) {
   console.log(item);
   request.delete(`user/delete/force`, { params: { 'userId': item.id } }).then(() => {
     items.value = [];
-    loadItems({ page: 1, pageSize: pageSize.value, sortBy: '' });
+    loadItems({ page: 1, itemsPerPage: pageSize.value, sortBy: '' });
     useAlertStore().showMessage('success', '删除成功');
   }).catch((error) => {
     console.error(error);
@@ -50,7 +50,7 @@ function deleteItem(item: User) {
 function addItem({ username, password, departId }: { username: string, password: string, departId: number }) {
   request.post('user/create', { 'username': username, 'password': password, 'departId': departId }).then(() => {
     items.value = [];
-    loadItems({ page: 1, pageSize: pageSize.value, sortBy: '' });
+    loadItems({ page: 1, itemsPerPage: pageSize.value, sortBy: '' });
     useAlertStore().showMessage('success', '添加成功');
   }).catch((error) => {
     console.error(error);

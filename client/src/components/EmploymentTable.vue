@@ -47,10 +47,10 @@ const loading: Ref<boolean> = ref(false);
 const departId = computed(() => useUserStore().departId);
 const selected: Ref<number[]> = ref([]);
 
-function loadItems({ page, pageSize, sortBy }: { page: number, pageSize: number, sortBy: string }) {
+function loadItems({ page, itemsPerPage, sortBy }: { page: number, itemsPerPage: number, sortBy: string }) {
   sortBy;
   loading.value = true;
-  request.get(`employment/depart/${departId.value}/all`, { params: { page, pageSize } }).then((response) => {
+  request.get(`employment/depart/${departId.value}/all`, { params: { page, pageSize: itemsPerPage } }).then((response) => {
     items.value = response.data.data.list;
     totalItems.value = response.data.data.total;
   }).catch((error) => {
@@ -64,7 +64,7 @@ function deleteItem(item: SimpleEmployment) {
   console.log(item);
   request.delete(`employment`, { params: { 'id': item.id } }).then(() => {
     items.value = [];
-    loadItems({ page: 1, pageSize: pageSize.value, sortBy: '' });
+    loadItems({ page: 1, itemsPerPage: pageSize.value, sortBy: '' });
     useAlertStore().showMessage('success', '删除成功');
   }).catch((error) => {
     console.error(error);
@@ -73,7 +73,7 @@ function deleteItem(item: SimpleEmployment) {
 
 function refresh() {
   items.value = [];
-  loadItems({ page: 1, pageSize: pageSize.value, sortBy: '' });
+  loadItems({ page: 1, itemsPerPage: pageSize.value, sortBy: '' });
 }
 
 const isLoadingFullInfo: Ref<boolean> = ref(false);
