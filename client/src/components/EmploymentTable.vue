@@ -114,7 +114,7 @@ async function exportQRCode() {
     }
     pdf.addImage(image[0], 'PNG', 0, 0, QRCODE_SIZE, QRCODE_SIZE);
     // write staff name at the bottom
-    pdf.setFontSize(12);
+    pdf.setFontSize(15);
     const pinyinName = pinyin(image[1], { style: pinyin.STYLE_NORMAL }).flat().join(' ');
     pdf.text(pinyinName, QRCODE_SIZE / 2, QRCODE_SIZE - 10, { align: 'center' });
   });
