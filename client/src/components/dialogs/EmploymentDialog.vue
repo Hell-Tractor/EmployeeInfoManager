@@ -159,8 +159,8 @@ async function selectImage() {
                             </v-col>
                         </v-row>
                         <v-img v-if="!!imageURL" :src="imageURL" max-height="200px"></v-img>
-                        <v-btn v-else height="200px" width="100%" @click="selectImage()">上传工作许可照片</v-btn>
-                        <v-select v-model="riskTagIds" :items="props.allRiskTags" item-title="name" item-value="id" label="风险标签" multiple chips></v-select>
+                        <v-btn v-else height="200px" width="100%" @click="selectImage()">上传证件<br>（特种作业证、特种设备作业证或其他工作资质证件）</v-btn>
+                        <v-select v-model="riskTagIds" :items="props.allRiskTags" item-title="name" item-value="id" label="存在风险" multiple chips></v-select>
                         <v-text-field v-model="violation" label="违规记录" :rules="[rules.maxLength128]"></v-text-field>
                     </v-card-text>
                     <v-card-actions>

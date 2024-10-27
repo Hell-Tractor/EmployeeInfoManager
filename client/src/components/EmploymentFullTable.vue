@@ -186,12 +186,12 @@ async function updateItem() {
             </tr>
             <tr>
               <td colspan="3">
-                <v-select v-model="props.employment!.riskTags" item-title="name" return-object :items="allRiskTags ?? props.employment!.riskTags" label="风险标签" multiple chips :readonly="readonly" :hide-details="readonly ? true : 'auto'"></v-select>
+                <v-select v-model="props.employment!.riskTags" item-title="name" return-object :items="allRiskTags ?? props.employment!.riskTags" label="存在风险" multiple chips :readonly="readonly" :hide-details="readonly ? true : 'auto'"></v-select>
               </td>
             </tr>
             <tr>
               <td colspan="3">
-                <v-list-item title="工作许可" style="color: gray;"></v-list-item>
+                <v-list-item title="工作证件资质" style="color: gray;"></v-list-item>
                 <v-img :src="workPermitImageURL" min-height="100" @click="readonly ? true : selectImage()"></v-img>
               </td>
             </tr>
