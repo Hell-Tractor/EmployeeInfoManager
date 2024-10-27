@@ -63,7 +63,7 @@ const allowedPages = computed(() => pages.filter(p => isAllowed(p.requireRoot)))
 <template>
   <v-layout class="rounded rounded-md">
     <v-navigation-drawer image="https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg" theme="dark">
-      <v-list-item title="员工管理系统" @click="appStore.redirectTo('home')"></v-list-item>
+      <v-list-item title="外委人员信息管理系统" @click="appStore.redirectTo('home')"></v-list-item>
       <v-divider></v-divider>
       <v-list-item v-for="item in allowedPages" :key = "item.name" @click="appStore.redirectTo(item.name)" :title="item.text" :prepend-icon="item.icon"></v-list-item>
       <v-divider></v-divider>
