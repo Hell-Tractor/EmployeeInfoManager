@@ -33,6 +33,6 @@ onMounted(() => {
 </script>
 
 <template>
-    <EmploymentFullTable :employment="employment" :isLoading="isLoading" :show-actions="false" width="100%" max-width="800"></EmploymentFullTable>
-    <h1 v-if="!isLoading && notFound">二维码已失效</h1>
+    <h1 v-if="!isLoading && notFound" class="h-center align-center">二维码已失效</h1>
+    <EmploymentFullTable v-else :employment="employment" :isLoading="isLoading" :show-actions="false" width="100%" max-width="800"></EmploymentFullTable>
 </template>

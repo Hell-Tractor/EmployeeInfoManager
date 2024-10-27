@@ -130,8 +130,16 @@ async function deleteStaff() {
 
 async function deleteImage() {
   if (!!staffInTable.value.image) {
-    await request.delete(`image/staff/${staffInTable.value.image}`);
-    staffInTable.value.image = '';
+    try {
+      await request.delete(`image/staff/${staffInTable.value.image}`);
+      staffInTable.value.image = '';
+    } catch (error: any) {
+      if (error.response.status === 404) {
+        console.log("Image not found");
+      } else {
+        throw error;
+      }
+    }
   } else {
     console.log("No image to delete");
   }
